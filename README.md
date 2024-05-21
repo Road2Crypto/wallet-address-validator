@@ -62,14 +62,6 @@ addresses.forEach((address) => {
 - **Solana**
 - **Bitcoin**
 
-## Possible Responses
-
-The `checkCryptoAddress` function returns an object with an `error` property. The possible values of `error` are:
-
-- `null`: The address is valid.
-- `ValidationError.EMPTY_ADDRESS`: The provided address is empty.
-- `ValidationError.INVALID_ADDRESS`: The provided address does not match any supported wallet address patterns.
-
 ## Function Details
 
 ### `checkCryptoAddress(address: string): { error: ValidationError  | null }`
@@ -79,6 +71,7 @@ The `checkCryptoAddress` function returns an object with an `error` property. Th
   - `address` (string): The cryptocurrency wallet address to validate.
 
 - **Returns**:
-  - An object with a single property `error`.
-    - `null` if the address is valid.
-    - A `ValidationError` enum value describing the error if the address is invalid.
+  - The `checkCryptoAddress` function returns an object with an `error` property. The possible values of `error` are:
+    - `null`: The address is valid.
+    - `ValidationError.EMPTY_ADDRESS`: The provided address is empty.
+    - `ValidationError.INVALID_ADDRESS`: The provided address does not match any supported wallet address patterns.
