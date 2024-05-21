@@ -1,0 +1,32 @@
+{
+    "name": "wallet-address-validator",
+    "version": "1.0.0",
+    "description": "A simple utility to validate cryptocurrency wallet addresses for EVM, Solana, and Bitcoin chains.",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "prepublishOnly": "npm run build"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Road2Crypto/wallet-address-validator.git"
+    },
+    "keywords": [
+        "wallet",
+        "address",
+        "validator",
+        "cryptocurrency",
+        "EVM",
+        "Solana",
+        "Bitcoin"
+    ],
+    "author": "Road2Crypto",
+    "license": "MIT",
+    "dependencies": {
+        "web3-validator": "2.0.5"
+    },
+    "devDependencies": {
+        "typescript": "5.4.5"
+    }
+}
