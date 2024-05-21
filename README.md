@@ -58,7 +58,7 @@ addresses.forEach((address) => {
 
 ## Supported Chains
 
-- **EVM (Ethereum Virtual Machine)**
+- **EVM addresses**
 - **Solana**
 - **Bitcoin**
 
