@@ -1,15 +1,8 @@
 import { isAddress } from "web3-validator";
-import { ReturnTypeValidationFunction, ValidationError } from "./types";
+import { ReturnTypeValidationFunction, ValidationErrorMessage, WalletType } from "./types";
 
 // Utility function to check for empty strings
 const checkEmpty = (value: string): boolean => !value || value.trim().length === 0;
-
-// Supported wallet types
-enum WalletType {
-    EVM = "evm",
-    SOLANA = "solana",
-    BITCOIN = "bitcoin",
-}
 
 // Regular expressions for Bitcoin and Solana address validation
 const testBitcoin = (): RegExp => {
@@ -27,8 +20,8 @@ const walletRegexes: Partial<Record<WalletType, RegExp>> = {
     [WalletType.BITCOIN]: testBitcoin(),
 };
 
-// Validate wallet address function
-const validateWalletAddress = (address: string): WalletType | null => {
+// Function to get wallet address type
+const getWalletAddressType = (address: string): WalletType | null => {
     // Check if the address is a Bitcoin address first
     if (walletRegexes[WalletType.BITCOIN]?.test(address)) {
         return WalletType.BITCOIN;
@@ -50,19 +43,19 @@ const validateWalletAddress = (address: string): WalletType | null => {
 };
 
 // Main function to check crypto address
-const checkCryptoAddress = (address: string): ReturnTypeValidationFunction => {
+const isWalletValid = (address: string): ReturnTypeValidationFunction => {
     // Remove extra spaces
     address = address.trim();
 
     // Check if the address is empty
-    if (checkEmpty(address)) return { error: ValidationError.EMPTY_ADDRESS };
+    if (checkEmpty(address)) return { valid: false, error: { statusCode: 400, message: ValidationErrorMessage.EMPTY_ADDRESS } };
 
-    // Validate the address
-    if (validateWalletAddress(address) === null)
-        return { error: ValidationError.INVALID_ADDRESS };
+    // Get address type and validate it
+    const walletAddressType = getWalletAddressType(address);
+    if (walletAddressType === null) return { valid: false, error: { statusCode: 400, message: ValidationErrorMessage.INVALID_ADDRESS } };
 
-    // Return success if valid
-    return { error: null };
+    // Return success response
+    return { valid: true, type: walletAddressType };
 };
 
-export default checkCryptoAddress;
+export default isWalletValid;

@@ -56,12 +56,6 @@ addresses.forEach((address) => {
 });
 ```
 
-## Supported Chains
-
-- **EVM addresses**
-- **Solana**
-- **Bitcoin**
-
 ## Function Details
 
 ### `checkCryptoAddress(address: string): { error: ValidationError  | null }`
@@ -75,3 +69,9 @@ addresses.forEach((address) => {
     - `null`: The address is valid.
     - `ValidationError.EMPTY_ADDRESS`: The provided address is empty.
     - `ValidationError.INVALID_ADDRESS`: The provided address does not match any supported wallet address patterns.
+
+## Supported Chains
+
+- **EVM (Ethereum Virtual Machine)**
+- **Solana**
+- **Bitcoin**

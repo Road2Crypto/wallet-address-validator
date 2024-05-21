@@ -5,6 +5,7 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
+        "setup": "npm i && npm run build",
         "build": "tsc",
         "prepublishOnly": "npm run build"
     },
