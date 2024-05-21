@@ -1,13 +1,13 @@
-# wallet-address-validator
+# road2crypto-wallet-address-validator
 
-A simple utility to validate cryptocurrency wallet addresses for EVM, Solana, and Bitcoin chains.
+A simple utility to validate a cryptocurrency wallet addresses.
 
 ## Installation
 
 To install the package, run:
 
 ```sh
-npm install wallet-address-validator
+npm install road2crypto-wallet-address-validator
 ```
 
 ## Usage
@@ -15,8 +15,8 @@ npm install wallet-address-validator
 Import the `checkCryptoAddress` function and use it to validate wallet addresses.
 
 ```typescript
-import checkCryptoAddress from "wallet-address-validator";
-import { ValidationError } from "wallet-address-validator/dist/types";
+import checkCryptoAddress from "road2crypto-wallet-address-validator";
+import { ValidationError } from "road2crypto-wallet-address-validator/dist/types";
 
 const result = checkCryptoAddress("your_wallet_address_here");
 
@@ -30,8 +30,8 @@ if (result.error) {
 ### Example
 
 ```typescript
-import checkCryptoAddress from "wallet-address-validator";
-import { ValidationError } from "wallet-address-validator/dist/types";
+import checkCryptoAddress from "road2crypto-wallet-address-validator";
+import { ValidationError } from "road2crypto-wallet-address-validator/dist/types";
 
 const addresses = [
   "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // EVM
