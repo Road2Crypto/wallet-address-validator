@@ -1,37 +1,39 @@
-# wallet-address-validator
+# road2crypto-wallet-address-validator
 
-A simple utility to validate cryptocurrency wallet addresses for EVM, Solana, and Bitcoin chains.
+A simple utility to validate a cryptocurrency wallet address.
 
 ## Installation
 
 To install the package, run:
 
 ```sh
-npm install wallet-address-validator
+npm install road2crypto-wallet-address-validator
 ```
 
 ## Usage
 
-Import the `checkCryptoAddress` function and use it to validate wallet addresses.
+Import the `isWalletValid` function and use it to validate wallet addresses.
 
 ```typescript
-import checkCryptoAddress from "wallet-address-validator";
-import { ValidationError } from "wallet-address-validator/dist/types";
+import isWalletValid from "road2crypto-wallet-address-validator";
 
-const result = checkCryptoAddress("your_wallet_address_here");
+const result = isWalletValid("your_wallet_address_here");
 
-if (result.error) {
-  console.error("Invalid address:", result.error);
+if (!result.valid) {
+  console.error("Error message:", result.error?.message);
 } else {
-  console.log("Valid address");
+  console.log("Valid address of type:", result.type);
 }
 ```
 
 ### Example
 
 ```typescript
-import checkCryptoAddress from "wallet-address-validator";
-import { ValidationError } from "wallet-address-validator/dist/types";
+import isWalletValid from "road2crypto-wallet-address-validator";
+import {
+  ValidationErrorMessage,
+  WalletType,
+} from "road2crypto-wallet-address-validator/dist/types";
 
 const addresses = [
   "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // EVM
@@ -41,37 +43,48 @@ const addresses = [
 ];
 
 addresses.forEach((address) => {
-  const result = checkCryptoAddress(address);
-  if (result.error) {
-    if (result.error === ValidationError.EMPTY_ADDRESS) {
+  const result = isWalletValid(address);
+  if (!result.valid) {
+    if (result.error?.message === ValidationErrorMessage.EMPTY_ADDRESS) {
       console.log(`Address: ${address} is invalid: Address is empty`);
-    } else if (result.error === ValidationError.INVALID_ADDRESS) {
+    } else if (
+      result.error?.message === ValidationErrorMessage.INVALID_ADDRESS
+    ) {
       console.log(
         `Address: ${address} is invalid: Address format is incorrect`
       );
     }
   } else {
-    console.log(`Address: ${address} is valid`);
+    console.log(`Address: ${address} is valid and of type ${result.type}`);
   }
 });
 ```
 
-## Supported Chains
-
-- **EVM (Ethereum Virtual Machine)**
-- **Solana**
-- **Bitcoin**
-
 ## Function Details
 
-### `checkCryptoAddress(address: string): { error: ValidationError  | null }`
+### `isWalletValid(address: string): { valid: boolean, type?: WalletType, error?: { statusCode: number, message: ValidationErrorMessage } }`
 
 - **Parameters**:
 
   - `address` (string): The cryptocurrency wallet address to validate.
 
 - **Returns**:
-  - The `checkCryptoAddress` function returns an object with an `error` property. The possible values of `error` are:
-    - `null`: The address is valid.
-    - `ValidationError.EMPTY_ADDRESS`: The provided address is empty.
-    - `ValidationError.INVALID_ADDRESS`: The provided address does not match any supported wallet address patterns.
+  - An object with the following properties:
+    - `valid` (boolean): Indicates whether the address is valid.
+    - `type` (WalletType, optional): The type of the wallet address if valid (`evm`, `solana`, `bitcoin`).
+    - `error` (object, optional): Contains error details if the address is invalid:
+      - `statusCode` (number): The HTTP status code representing the error.
+      - `message` (ValidationErrorMessage): The error message.
+
+## Error Messages
+
+The possible error messages are:
+
+- `ValidationErrorMessage.EMPTY_ADDRESS`: The provided address is empty.
+- `ValidationErrorMessage.INVALID_ADDRESS`: The provided address does not match any supported wallet address patterns.
+
+## Supported Chains
+
+- **EVM addresses**
+- **Solana**
+- **Bitcoin**
