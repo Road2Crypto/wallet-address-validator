@@ -1,7 +1,5 @@
-import { isAddress } from "web3-validator";
-
 import { WalletType } from "../types/wallet";
-import { allWalletRegexes, regexBitcoin } from "../validation/address";
+import { allWalletRegexes, isValidEvmAddress, regexBitcoin } from "../validation/address";
 
 // Function to get wallet address type
 export const getWalletType = (address: string): WalletType | null => {
@@ -11,7 +9,7 @@ export const getWalletType = (address: string): WalletType | null => {
     }
 
     // Validate EVM address separately
-    if (isAddress(address)) {
+    if (isValidEvmAddress(address)) {
         return WalletType.EVM;
     }
 

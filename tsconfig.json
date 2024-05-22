@@ -11,6 +11,7 @@
         "declarationMap": true // Generate sourcemaps for .d.ts files
     },
     "include": [
-        "src"
+        "src",
+        "tests"
     ]
 }
