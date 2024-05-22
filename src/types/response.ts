@@ -1,9 +1,5 @@
-// Supported wallet types
-export enum WalletType {
-    EVM = "evm",
-    SOLANA = "solana",
-    BITCOIN = "bitcoin",
-}
+// Import necessary modues and types
+import { WalletType } from "./wallet";
 
 // Possible Error Messages
 export enum ValidationErrorMessage {
@@ -12,7 +8,7 @@ export enum ValidationErrorMessage {
 }
 
 // Return type of `isWalletValid` function
-export interface ReturnTypeValidationFunction {
+export interface Response {
     valid: boolean,
     type?: WalletType,
     error?: {

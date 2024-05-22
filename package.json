@@ -5,9 +5,10 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "setup": "npm i && npm run build",
         "build": "tsc",
-        "prepublishOnly": "npm run build"
+        "setup": "npm i && npm run build",
+        "prepublishOnly": "npm run build",
+        "publish": "npm run setup && npm publish --access public"
     },
     "repository": {
         "type": "git",

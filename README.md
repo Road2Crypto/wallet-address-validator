@@ -1,6 +1,6 @@
 # road2crypto-wallet-address-validator
 
-A simple utility to validate cryptocurrency wallet addresses for EVM, Solana, and Bitcoin chains.
+A simple utility to validate a cryptocurrency wallet address.
 
 ## Installation
 
@@ -85,6 +85,6 @@ The possible error messages are:
 
 ## Supported Chains
 
-- **EVM (Ethereum Virtual Machine)**
+- **EVM addresses**
 - **Solana**
 - **Bitcoin**
