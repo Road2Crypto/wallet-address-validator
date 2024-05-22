@@ -1,4 +1,3 @@
-// Import necessary modues and types
 import { checkEmpty } from "./utils/checkEmpty";
 import { getWalletType } from "./utils/getWalletType";
 import { Response, ValidationErrorMessage } from "./types/response";
