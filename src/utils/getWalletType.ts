@@ -1,4 +1,5 @@
 import { isAddress } from "web3-validator";
+
 import { WalletType } from "../types/wallet";
 import { allWalletRegexes, regexBitcoin } from "../validation/address";
 
