@@ -1,6 +1,6 @@
 {
     "name": "road2crypto-wallet-address-validator",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "A simple utility to validate cryptocurrency wallet addresses for EVM, Solana, and Bitcoin chains.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

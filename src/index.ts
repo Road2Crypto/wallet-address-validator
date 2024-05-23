@@ -3,7 +3,7 @@ import { getWalletType } from "./utils/getWalletType";
 import { Response, ValidationErrorMessage } from "./types/response";
 
 // Function to check crypto address
-const isWalletValid = (address: string): Response => {
+export const isWalletValid = (address: string): Response => {
     // Remove extra spaces
     address = address.trim();
 
@@ -17,5 +17,3 @@ const isWalletValid = (address: string): Response => {
     // Return success response
     return { valid: true, type: walletAddressType };
 };
-
-export default isWalletValid;
