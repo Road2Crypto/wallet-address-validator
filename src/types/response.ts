@@ -8,11 +8,21 @@ export enum ValidationErrorMessage {
 }
 
 // Return type of `isWalletValid` function
-export interface Response {
-    valid: boolean,
-    type?: WalletType,
-    error?: {
-        statusCode: number,
-        message: ValidationErrorMessage,
-    },
-}
+interface WalletValidationResponseError {
+    statusCode: number,
+    message: ValidationErrorMessage,
+};
+
+interface WalletValidationResponseWithType {
+    valid: true,
+    type: WalletType,
+    error?: undefined,
+};
+
+interface WalletValidationResponseWithError {
+    valid: false,
+    type?: undefined,
+    error: WalletValidationResponseError;
+};
+
+export type WalletValidationResponse = WalletValidationResponseWithType | WalletValidationResponseWithError;
