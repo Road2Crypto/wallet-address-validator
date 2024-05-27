@@ -15,11 +15,7 @@ npm install r2c-wallet-validator
 Import the necessary functions and types from `r2c-wallet-validator` and use them in your code.
 
 ```typescript
-import {
-  isWalletValid,
-  ValidationErrorMessage,
-  WalletType,
-} from "r2c-wallet-validator";
+import { isWalletValid, ValidationErrorMessage, WalletType } from "r2c-wallet-validator";
 
 const result = isWalletValid("your_wallet_address_here");
 

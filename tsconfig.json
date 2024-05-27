@@ -1,17 +1,16 @@
 {
     "compilerOptions": {
-        "target": "ESNext", // Use the latest ECMAScript target
-        "module": "commonjs", // Use CommonJS modules
-        "strict": true, // Enable strict type-checking options
-        "esModuleInterop": true, // Enables emit interoperability between CommonJS and ES Modules
-        "skipLibCheck": true, // Skip type checking of declaration files
-        "forceConsistentCasingInFileNames": true, // Ensure file name casing consistency
-        "outDir": "./dist", // Specify the output directory
-        "declaration": true, // Generate .d.ts files alongside .js files
-        "declarationMap": true // Generate sourcemaps for .d.ts files
-    },
-    "include": [
-        "src",
-        "tests"
-    ]
+        /* Visit https://aka.ms/tsconfig to read more about this file */
+        /* Language and Environment */
+        "target": "es2016", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+        /* Modules */
+        "module": "commonjs", /* Specify what module code is generated. */
+        "noEmit": true, /* Disable emitting files from a compilation. */
+        "esModuleInterop": true, /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+        "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+        /* Type Checking */
+        "strict": true, /* Enable all strict type-checking options. */
+        "noUncheckedIndexedAccess": true, /* Add 'undefined' to a type when accessed using an index. */
+        "skipLibCheck": true /* Skip type checking all .d.ts files. */
+    }
 }
