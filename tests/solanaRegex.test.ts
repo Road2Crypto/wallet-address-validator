@@ -1,7 +1,7 @@
 import { testSolana } from '../src/validation/address';
 
-describe('Solana Address Regex', () => {
-    test('Valid Solana addresses', () => {
+describe('solanaAddressRegex', () => {
+    test('validAddresses', () => {
         const validSolanaAddresses = [
             '4Nd1mQ2foW7qSwk89NzVFTva9UtaYenEF69k1ysEVnnK',
             '7QdSkQZn7yyRCicHTrjqAMR1NTsFYpJHyEnfjqWRd9XN',
@@ -15,7 +15,7 @@ describe('Solana Address Regex', () => {
         });
     });
 
-    test('Invalid Solana addresses', () => {
+    test('invalidAddresses', () => {
         const invalidSolanaAddresses = [
             '4Nd1mQ2foW7qSwk89NzVFTva9UtaYenEF69k1ysEVnnK3m', // too long
             'InvalidSolanaAddress12345',
