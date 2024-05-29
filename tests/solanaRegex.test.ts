@@ -1,24 +1,27 @@
-import { regexSolana } from '../src/validation/address';
+import { testSolana } from '../src/validation/address';
 
-describe('Solana Address Regex', () => {
-    test('Valid Solana addresses', () => {
+describe('solanaAddressRegex', () => {
+    test('validAddresses', () => {
         const validSolanaAddresses = [
             '4Nd1mQ2foW7qSwk89NzVFTva9UtaYenEF69k1ysEVnnK',
             '7QdSkQZn7yyRCicHTrjqAMR1NTsFYpJHyEnfjqWRd9XN',
+            'Picanmgae1ZFueTPZLwLzPRhNG4Y7H1yQtrqxCqUZLe',
+            'cHinUpMekg5GDr7w53B6Cb7M6SdK7uMojbpQg6QCc11',
+            'BLhx1pi4rCLZY2qTqLmUAueLXzPzprhaiarysxLbFwVa',
+            'mrgn4sJJu5GBa5wbKyjuASzhyCifvcedGoLtpKjB3Wf',
         ];
         validSolanaAddresses.forEach(address => {
-            expect(regexSolana.test(address)).toBe(true);
+            expect(testSolana().test(address)).toBe(true);
         });
     });
 
-    test('Invalid Solana addresses', () => {
+    test('invalidAddresses', () => {
         const invalidSolanaAddresses = [
-            '4Nd1mQ2foW7qSwk89NzVFTva9UtaYenEF69k1ysEVnn', // too short
             '4Nd1mQ2foW7qSwk89NzVFTva9UtaYenEF69k1ysEVnnK3m', // too long
             'InvalidSolanaAddress12345',
         ];
         invalidSolanaAddresses.forEach(address => {
-            expect(regexSolana.test(address)).toBe(false);
+            expect(testSolana().test(address)).toBe(false);
         });
     });
 });

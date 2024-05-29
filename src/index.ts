@@ -1,5 +1,5 @@
 import { checkEmpty } from "./utils/checkEmpty";
-import { getWalletType } from "./utils/getWalletType";
+import { getWalletAddressType } from "./utils/getWalletAddressType";
 import { WalletValidationResponse, ValidationErrorMessage } from "./types/response";
 
 // Function to check crypto address
@@ -13,7 +13,7 @@ export const isWalletValid = (address: string): WalletValidationResponse => {
     }
 
     // Get address type and validate it
-    const walletAddressType = getWalletType(address);
+    const walletAddressType = getWalletAddressType(address);
     if (walletAddressType === null) {
         return { valid: false, error: { statusCode: 400, message: ValidationErrorMessage.INVALID_ADDRESS } };
     }

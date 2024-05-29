@@ -1,6 +1,6 @@
 {
     "name": "r2c-wallet-validator",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "A simple utility to validate cryptocurrency wallet addresses for EVM, Solana, and Bitcoin chains.",
     "main": "dist/index.js",
     "module": "dist/index.mjs",
@@ -10,7 +10,6 @@
         "lint": "tsc",
         "setup": "npm i && npm run build",
         "test": "npm run setup && npm run lint && jest",
-        "prepublishOnly": "npm run build",
         "publish": "npm test && npm publish --access public"
     },
     "repository": {
@@ -28,9 +27,6 @@
     ],
     "author": "Road2Crypto",
     "license": "MIT",
-    "dependencies": {
-        "web3-validator": "2.0.5"
-    },
     "devDependencies": {
         "@babel/core": "7.24.5",
         "@babel/preset-env": "7.24.5",
