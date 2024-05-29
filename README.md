@@ -15,15 +15,16 @@ npm install r2c-wallet-validator
 Import the necessary functions and types from `r2c-wallet-validator` and use them in your code.
 
 ```typescript
-import { isWalletValid, ValidationErrorMessage, WalletType } from "r2c-wallet-validator";
+import { isWalletValid } from "r2c-wallet-validator";
 
 const result = isWalletValid("your_wallet_address_here");
 
 if (!result.valid) {
   console.error("Error message:", result.error?.message);
 } else {
-  console.log("Valid address of type:", result.type);
+  console.log("Wallet address type:", result.type);
 }
+
 ```
 
 ### Example
@@ -41,15 +42,35 @@ const addresses = [
 addresses.forEach((address) => {
   const result = isWalletValid(address);
   if (!result.valid) {
-    if (result.error?.message === ValidationErrorMessage.EMPTY_ADDRESS) {
-      console.log(`Address: ${address} is invalid: Address is empty`);
-    } else if (result.error?.message === ValidationErrorMessage.INVALID_ADDRESS) {
-      console.log(`Address: ${address} is invalid: Address format is incorrect`);
+    switch (result.error?.message) {
+      case ValidationErrorMessage.EMPTY_ADDRESS:
+        console.log(`Address: ${address} is invalid: Address is empty.`);
+        break;
+      case ValidationErrorMessage.INVALID_ADDRESS:
+        console.log(`Address: ${address} is invalid: Address format is incorrect.`);
+        break;
+      default:
+        console.log(`Address: ${address} is invalid.`);
+        break;
     }
   } else {
-    console.log(`Address: ${address} is valid and of type ${result.type}`);
+    switch (result.type) {
+      case WalletType.EVM:
+        console.log(`Address: ${address} is valid and of type EVM.`);
+        break;
+      case WalletType.SOLANA:
+        console.log(`Address: ${address} is valid and of type Solana.`);
+        break;
+      case WalletType.BITCOIN:
+        console.log(`Address: ${address} is valid and of type Bitcoin.`);
+        break;
+      default:
+        console.log(`Address: ${address} is valid but of unknown type.`);
+        break;
+    }
   }
 });
+
 ```
 
 ## Function Details
