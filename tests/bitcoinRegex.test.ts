@@ -1,4 +1,4 @@
-import { regexBitcoin } from '../src/validation/address';
+import { testBitcoin } from '../src/validation/address';
 
 describe('Bitcoin Address Regex', () => {
     test('Valid P2PKH addresses', () => {
@@ -7,7 +7,7 @@ describe('Bitcoin Address Regex', () => {
             '1BoatSLRHtKNngkdXEeobR76b53LETtpyT',
         ];
         validP2PKH.forEach(address => {
-            expect(regexBitcoin.test(address)).toBe(true);
+            expect(testBitcoin().test(address)).toBe(true);
         });
     });
 
@@ -17,7 +17,7 @@ describe('Bitcoin Address Regex', () => {
             '3QJmV3qfvL9SuYo34YihAf3sRCW3qSinyC',
         ];
         validP2SH.forEach(address => {
-            expect(regexBitcoin.test(address)).toBe(true);
+            expect(testBitcoin().test(address)).toBe(true);
         });
     });
 
@@ -27,7 +27,7 @@ describe('Bitcoin Address Regex', () => {
             'bc1qrp33g0qyz8f7g4wy9kpq0unsq3m6yx4xsl522z',
         ];
         validBech32.forEach(address => {
-            expect(regexBitcoin.test(address)).toBe(true);
+            expect(testBitcoin().test(address)).toBe(true);
         });
     });
 
@@ -39,7 +39,7 @@ describe('Bitcoin Address Regex', () => {
             'NotEvenCloseToValid123',
         ];
         invalidAddresses.forEach(address => {
-            expect(regexBitcoin.test(address)).toBe(false);
+            expect(testBitcoin().test(address)).toBe(false);
         });
     });
 });

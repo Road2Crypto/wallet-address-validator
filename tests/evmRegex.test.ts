@@ -1,4 +1,4 @@
-import { isValidEvmAddress } from "../src/validation/address";
+import { testEVM } from "../src/validation/address";
 
 describe('EVM Wallet Address Validation', () => {
     test('Valid EVM addresses', () => {
@@ -6,7 +6,7 @@ describe('EVM Wallet Address Validation', () => {
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e', // valid
         ];
         validEvmAddresses.forEach(address => {
-            expect(isValidEvmAddress(address)).toBe(true);
+            expect(testEVM().test(address)).toBe(true);
         });
     });
 
@@ -18,7 +18,7 @@ describe('EVM Wallet Address Validation', () => {
             'NotAnEthereumAddress12345',
         ];
         invalidEvmAddresses.forEach(address => {
-            expect(isValidEvmAddress(address)).toBe(false);
+            expect(testEVM().test(address)).toBe(false);
         });
     });
 });
