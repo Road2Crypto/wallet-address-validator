@@ -8,7 +8,7 @@ export enum ValidationErrorMessage {
 }
 
 // Return type of `isWalletValid` function
-interface WalletValidationResponseError {
+export interface WalletValidationResponseError {
     statusCode: number,
     message: ValidationErrorMessage,
 };

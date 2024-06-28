@@ -106,6 +106,22 @@ addresses.forEach((address) => {
   - `SOLANA`: Solana wallet.
   - `BITCOIN`: Bitcoin wallet.
 
+### `WalletValidationResponseError`
+
+- An interface representing the structure of an error response when validating wallet addresses.
+- Properties:
+  - `statusCode`: A number representing the HTTP status code of the error.
+  - `message`: A `ValidationErrorMessage` indicating the specific error.
+
+### `WalletValidationResponse`
+
+- An interface representing the structure of a wallet validation response.
+- Properties:
+  - `valid`: A boolean.
+  - `type`: A `WalletType` indicating the type of the wallet.
+  - `error`: A `WalletValidationResponseError` containing error details.
+- When `valid` is `true`, the response will include `type` indicating the wallet type and `error` will be `undefined`. Conversely, when `valid` is `false`, the response will include `error` with details about the validation error and `type` will be `undefined`.
+
 ## Supported Chains
 
 - **EVM addresses**

@@ -23,5 +23,5 @@ export const isWalletValid = (address: string): WalletValidationResponse => {
 };
 
 // Re-exporting types for easier import in other files
-export { ValidationErrorMessage } from "./types/response";
+export { ValidationErrorMessage, WalletValidationResponseError, WalletValidationResponse } from "./types/response";
 export { WalletType } from "./types/wallet";
