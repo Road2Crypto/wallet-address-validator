@@ -10,11 +10,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: main
 
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Get version from release
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          git pull origin main
+          echo "Publishing version $VERSION"
 
       - run: npm ci
 
