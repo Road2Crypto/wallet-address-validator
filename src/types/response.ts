@@ -1,5 +1,5 @@
 // Import necessary modues and types
-import { WalletType } from "./wallet";
+import { WalletType } from "./wallet"
 
 // Possible Error Messages
 export enum ValidationErrorMessage {
@@ -11,18 +11,18 @@ export enum ValidationErrorMessage {
 export interface WalletValidationResponseError {
     statusCode: number,
     message: ValidationErrorMessage,
-};
+}
 
 interface WalletValidationResponseWithType {
     valid: true,
     type: WalletType,
     error?: undefined,
-};
+}
 
 interface WalletValidationResponseWithError {
     valid: false,
     type?: undefined,
-    error: WalletValidationResponseError;
-};
+    error: WalletValidationResponseError
+}
 
-export type WalletValidationResponse = WalletValidationResponseWithType | WalletValidationResponseWithError;
+export type WalletValidationResponse = WalletValidationResponseWithType | WalletValidationResponseWithError
