@@ -1,4 +1,4 @@
-# r2c-wallet-validator
+# Crypto Wallet Address Validator
 
 A simple utility to validate a cryptocurrency wallet address.
 
