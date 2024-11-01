@@ -127,6 +127,7 @@ addresses.forEach((address) => {
 - **EVM addresses**
 - **Solana**
 - **Bitcoin**
+- **Cosmos**
 
 ## Contributing
 

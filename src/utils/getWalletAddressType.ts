@@ -1,5 +1,5 @@
 import { WalletType } from "../types/wallet"
-import { testEVM, testSolana, testBitcoin } from "../validation/address"
+import { testEVM, testSolana, testBitcoin, testCosmos } from "../validation/address"
 
 // Function to get wallet address type
 export const getWalletAddressType = (address: string): WalletType | null => {
@@ -16,6 +16,10 @@ export const getWalletAddressType = (address: string): WalletType | null => {
     // Validate Solana address
     if (testSolana().test(address)) {
         return WalletType.SOLANA
+    }
+
+    if (testCosmos().test(address)) {
+        return WalletType.COSMOS
     }
 
     return null

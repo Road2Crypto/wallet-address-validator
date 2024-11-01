@@ -23,7 +23,8 @@
         "cryptocurrency",
         "EVM",
         "Solana",
-        "Bitcoin"
+        "Bitcoin",
+        "Cosmos"
     ],
     "author": "Road2Crypto",
     "license": "MIT",

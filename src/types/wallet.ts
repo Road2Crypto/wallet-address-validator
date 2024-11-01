@@ -3,4 +3,5 @@ export enum WalletType {
     EVM = 'evm',
     SOLANA = 'solana',
     BITCOIN = 'bitcoin',
+    COSMOS = 'cosmos',
 }
