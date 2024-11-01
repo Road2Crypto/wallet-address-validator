@@ -25,7 +25,7 @@ jobs:
           git pull origin main
           echo "Publishing version $VERSION"
 
-      - run: npm ci
+      - run: npm install
 
       - run: npm test
 
