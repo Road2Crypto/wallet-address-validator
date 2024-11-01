@@ -127,3 +127,7 @@ addresses.forEach((address) => {
 - **EVM addresses**
 - **Solana**
 - **Bitcoin**
+
+## Contributing
+
+All contributions are welcome! Please feel free to open a Pull Request.
