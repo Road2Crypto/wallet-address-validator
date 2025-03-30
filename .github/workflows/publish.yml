@@ -24,51 +24,36 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "Publishing version $VERSION"
 
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
 
-      - run: npm test
+      - name: Run tests
+        run: npm test
 
-      - run: npm run build
+      - name: Build package
+        run: npm run build
 
       - name: Update package version
         run: |
           npm version $VERSION --no-git-tag-version
           echo "Updated package.json to version $VERSION"
 
-      - name: Check if version exists
-        id: version-check
+      - name: Publish package or verify it exists
         run: |
-          PUBLISHED=$(npm view r2c-wallet-validator@$VERSION version || echo "")
-          if [ -z "$PUBLISHED" ]; then
-            echo "PACKAGE_EXISTS=false" >> $GITHUB_ENV
-            echo "Version $VERSION doesn't exist yet, proceeding with publish"
-          else
-            echo "PACKAGE_EXISTS=true" >> $GITHUB_ENV
-            echo "Version $VERSION already published, skipping publish step"
-          fi
+          # Try to publish and capture the output
+          OUTPUT=$(npm publish --access public 2>&1 || true)
 
-      - name: Publish package
-        id: publish
-        continue-on-error: true
-        run: |
-          npm publish --access public
-          echo "PUBLISH_EXIT_CODE=$?" >> $GITHUB_ENV
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Verify publish status
-        run: |
-          if [ "$PUBLISH_EXIT_CODE" == "0" ]; then
-            echo "Package published successfully!"
+          # Check if the output contains the "already published" message
+          if echo "$OUTPUT" | grep -q "previously published versions"; then
+            echo "Package version $VERSION already exists on npm registry. This is OK."
+            exit 0
+          elif echo "$OUTPUT" | grep -q "published"; then
+            echo "Package successfully published!"
             exit 0
           else
-            NPM_LOG=$(find /home/runner/.npm/_logs -name "*-debug-0.log" -type f -exec ls -t {} \; | head -n 1)
-            if grep -q "You cannot publish over the previously published versions" "$NPM_LOG"; then
-              echo "Package was already published. This is fine, marking the step as successful."
-              exit 0
-            else
-              echo "Publish failed with an unexpected error:"
-              cat "$NPM_LOG"
-              exit 1
-            fi
+            echo "An unexpected error occurred during publishing:"
+            echo "$OUTPUT"
+            exit 1
           fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
