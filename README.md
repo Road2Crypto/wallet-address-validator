@@ -2,6 +2,8 @@
 
 A simple utility to validate a cryptocurrency wallet address.
 
+[![Build and Test](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/build-test.yml/badge.svg)](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/build-test.yml)
+
 ## Installation
 
 To install the package, run:
