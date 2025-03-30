@@ -48,13 +48,27 @@ jobs:
           fi
 
       - name: Publish package
-        if: env.PACKAGE_EXISTS == 'false'
-        run: npm publish --access public
+        id: publish
+        continue-on-error: true
+        run: |
+          npm publish --access public
+          echo "PUBLISH_EXIT_CODE=$?" >> $GITHUB_ENV
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Handle already published version
-        if: env.PACKAGE_EXISTS == 'true'
+      - name: Verify publish status
         run: |
-          echo "Package version $VERSION already exists on npm registry."
-          exit 0
+          if [ "$PUBLISH_EXIT_CODE" == "0" ]; then
+            echo "Package published successfully!"
+            exit 0
+          else
+            NPM_LOG=$(find /home/runner/.npm/_logs -name "*-debug-0.log" -type f -exec ls -t {} \; | head -n 1)
+            if grep -q "You cannot publish over the previously published versions" "$NPM_LOG"; then
+              echo "Package was already published. This is fine, marking the step as successful."
+              exit 0
+            else
+              echo "Publish failed with an unexpected error:"
+              cat "$NPM_LOG"
+              exit 1
+            fi
+          fi
