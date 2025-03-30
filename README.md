@@ -1,44 +1,72 @@
 # Crypto Wallet Address Validator
 
-A simple utility to validate a cryptocurrency wallet address.
+A simple utility to validate cryptocurrency wallet addresses across multiple blockchains.
 
 [![Build and Test](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/build-test.yml/badge.svg)](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/build-test.yml)
 [![Publish Package](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/publish.yml/badge.svg?event=release)](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/publish.yml)
+[![npm version](https://img.shields.io/npm/v/r2c-wallet-validator.svg)](https://www.npmjs.com/package/r2c-wallet-validator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Basic Example](#basic-example)
+  - [Advanced Example](#advanced-example)
+- [API Reference](#api-reference)
+  - [Functions](#functions)
+  - [Types](#types)
+- [Supported Chains](#supported-chains)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- Validate cryptocurrency wallet addresses across multiple blockchain networks
+- Zero dependencies for lightweight integration
+- TypeScript support with comprehensive type definitions
+- Detailed error responses for easier debugging
+- Support for EVM, Solana, Bitcoin, and Cosmos addresses
 
 ## Installation
 
-To install the package, run:
-
 ```sh
 npm install r2c-wallet-validator
+# or
+yarn add r2c-wallet-validator
+# or
+pnpm add r2c-wallet-validator
 ```
 
 ## Usage
 
-Import the necessary functions and types from `r2c-wallet-validator` and use them in your code.
+### Basic Example
 
 ```typescript
+// Simple validation example
 import { isWalletValid } from "r2c-wallet-validator";
 
-const result = isWalletValid("your_wallet_address_here");
+const result = isWalletValid("0x742d35Cc6634C0532925a3b844Bc454e4438f44e");
 
 if (!result.valid) {
   console.error("Error message:", result.error?.message);
 } else {
-  console.log("Wallet address type:", result.type);
+  console.log("Wallet address type:", result.type); // WalletType.EVM
 }
-
 ```
 
-### Example
+### Advanced Example
 
 ```typescript
+// Advanced usage with all supported address types
 import { isWalletValid, ValidationErrorMessage, WalletType } from "r2c-wallet-validator";
 
 const addresses = [
   "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // EVM
   "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy", // Bitcoin
   "9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr", // Solana
+  "cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02", // Cosmos
   "invalid_address",
 ];
 
@@ -67,71 +95,93 @@ addresses.forEach((address) => {
       case WalletType.BITCOIN:
         console.log(`Address: ${address} is valid and of type Bitcoin.`);
         break;
+      case WalletType.COSMOS:
+        console.log(`Address: ${address} is valid and of type Cosmos.`);
+        break;
       default:
         console.log(`Address: ${address} is valid but of unknown type.`);
         break;
     }
   }
 });
-
 ```
 
-## Function Details
+## API Reference
 
-### `isWalletValid(address: string): { valid: boolean, type?: WalletType, error?: { statusCode: number, message: ValidationErrorMessage } }`
+### Functions
 
-- **Parameters**:
+#### `isWalletValid(address: string): WalletValidationResponse`
 
-  - `address` (string): The cryptocurrency wallet address to validate.
+Validates a cryptocurrency wallet address.
 
-- **Returns**:
-  - An object with the following properties:
-    - `valid` (boolean): Indicates whether the address is valid.
-    - `type` (WalletType, optional): The type of the wallet address if valid (`evm`, `solana`, `bitcoin`).
-    - `error` (object, optional): Contains error details if the address is invalid:
-      - `statusCode` (number): The HTTP status code representing the error.
-      - `message` (ValidationErrorMessage): The error message.
+**Parameters:**
+- `address` (string): The cryptocurrency wallet address to validate
 
-## Types
+**Returns:**
+- `WalletValidationResponse`: An object containing validation results:
+  - When valid: `{ valid: true, type: WalletType }`
+  - When invalid: `{ valid: false, error: { statusCode: number, message: ValidationErrorMessage } }`
 
-### `ValidationErrorMessage`
+### Types
 
-- An enum containing possible error messages when validating wallet addresses.
-- Possible values:
-  - `EMPTY_ADDRESS`: The provided address is empty.
-  - `INVALID_ADDRESS`: The provided address does not match any supported wallet address patterns.
+#### `ValidationErrorMessage`
 
-### `WalletType`
+```typescript
+enum ValidationErrorMessage {
+  EMPTY_ADDRESS = "Address is empty",
+  INVALID_ADDRESS = "Invalid address format"
+}
+```
 
-- An enum representing the type of cryptocurrency wallet addresses.
-- Possible values:
-  - `EVM`: Ethereum Virtual Machine (EVM) wallet.
-  - `SOLANA`: Solana wallet.
-  - `BITCOIN`: Bitcoin wallet.
+#### `WalletType`
 
-### `WalletValidationResponseError`
+```typescript
+enum WalletType {
+  EVM = "evm",
+  SOLANA = "solana",
+  BITCOIN = "bitcoin",
+  COSMOS = "cosmos"
+}
+```
 
-- An interface representing the structure of an error response when validating wallet addresses.
-- Properties:
-  - `statusCode`: A number representing the HTTP status code of the error.
-  - `message`: A `ValidationErrorMessage` indicating the specific error.
+#### `WalletValidationResponseError`
 
-### `WalletValidationResponse`
+```typescript
+interface WalletValidationResponseError {
+  statusCode: number;
+  message: ValidationErrorMessage;
+}
+```
 
-- An interface representing the structure of a wallet validation response.
-- Properties:
-  - `valid`: A boolean.
-  - `type`: A `WalletType` indicating the type of the wallet.
-  - `error`: A `WalletValidationResponseError` containing error details.
-- When `valid` is `true`, the response will include `type` indicating the wallet type and `error` will be `undefined`. Conversely, when `valid` is `false`, the response will include `error` with details about the validation error and `type` will be `undefined`.
+#### `WalletValidationResponse`
+
+```typescript
+interface WalletValidationResponse {
+  valid: boolean;
+  type?: WalletType;
+  error?: WalletValidationResponseError;
+}
+```
 
 ## Supported Chains
 
-- **EVM addresses**
-- **Solana**
-- **Bitcoin**
-- **Cosmos**
+| Chain    | Description                                                   | Example Address                                    |
+|----------|---------------------------------------------------------------|---------------------------------------------------|
+| EVM      | Ethereum, Polygon, BSC, Arbitrum, Optimism, and other EVM-compatible chains | `0x742d35Cc6634C0532925a3b844Bc454e4438f44e` |
+| Solana   | Solana blockchain addresses                                   | `9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr`    |
+| Bitcoin  | Bitcoin addresses (Legacy and SegWit)                          | `3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy`             |
+| Cosmos   | Cosmos Hub and other Cosmos ecosystem chains                  | `cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02`   |
 
 ## Contributing
 
 All contributions are welcome! Please feel free to open a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
