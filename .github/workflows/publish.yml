@@ -35,6 +35,26 @@ jobs:
           npm version $VERSION --no-git-tag-version
           echo "Updated package.json to version $VERSION"
 
-      - run: npm publish --access public
+      - name: Check if version exists
+        id: version-check
+        run: |
+          PUBLISHED=$(npm view r2c-wallet-validator@$VERSION version || echo "")
+          if [ -z "$PUBLISHED" ]; then
+            echo "PACKAGE_EXISTS=false" >> $GITHUB_ENV
+            echo "Version $VERSION doesn't exist yet, proceeding with publish"
+          else
+            echo "PACKAGE_EXISTS=true" >> $GITHUB_ENV
+            echo "Version $VERSION already published, skipping publish step"
+          fi
+
+      - name: Publish package
+        if: env.PACKAGE_EXISTS == 'false'
+        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Handle already published version
+        if: env.PACKAGE_EXISTS == 'true'
+        run: |
+          echo "Package version $VERSION already exists on npm registry."
+          exit 0
