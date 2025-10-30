@@ -27,7 +27,7 @@ A simple utility to validate cryptocurrency wallet addresses across multiple blo
 - Zero dependencies for lightweight integration
 - TypeScript support with comprehensive type definitions
 - Detailed error responses for easier debugging
-- Support for EVM, Solana, Bitcoin, and Cosmos addresses
+- Supported chains: [Chains](#supported-chains)
 
 ## Installation
 
@@ -66,6 +66,7 @@ const addresses = [
   "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // EVM
   "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy", // Bitcoin
   "9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr", // Solana
+  "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", // TRON
   "cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02", // Cosmos
   "invalid_address",
 ];
@@ -97,6 +98,9 @@ addresses.forEach((address) => {
         break;
       case WalletType.COSMOS:
         console.log(`Address: ${address} is valid and of type Cosmos.`);
+        break;
+      case WalletType.TRON:
+        console.log(`Address: ${address} is valid and of type TRON.`);
         break;
       default:
         console.log(`Address: ${address} is valid but of unknown type.`);
@@ -140,7 +144,8 @@ enum WalletType {
   EVM = "evm",
   SOLANA = "solana",
   BITCOIN = "bitcoin",
-  COSMOS = "cosmos"
+  COSMOS = "cosmos",
+  TRON = "tron"
 }
 ```
 
@@ -165,12 +170,13 @@ interface WalletValidationResponse {
 
 ## Supported Chains
 
-| Chain    | Description                                                   | Example Address                                    |
-|----------|---------------------------------------------------------------|---------------------------------------------------|
-| EVM      | Ethereum, Polygon, BSC, Arbitrum, Optimism, and other EVM-compatible chains | `0x742d35Cc6634C0532925a3b844Bc454e4438f44e` |
-| Solana   | Solana blockchain addresses                                   | `9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr`    |
-| Bitcoin  | Bitcoin addresses (Legacy and SegWit)                          | `3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy`             |
-| Cosmos   | Cosmos Hub and other Cosmos ecosystem chains                  | `cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02`   |
+| Chain   | Description                                                                 | Example Address                                   |
+|---------|-----------------------------------------------------------------------------|---------------------------------------------------|
+| EVM     | Ethereum, Polygon, BSC, Arbitrum, Optimism, and other EVM-compatible chains | `0x742d35Cc6634C0532925a3b844Bc454e4438f44e`      |
+| Solana  | Solana blockchain addresses (strict 32-byte Base58 public keys)             | `9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr`     |
+| Bitcoin | Bitcoin addresses (Legacy and SegWit)                                        | `3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy`              |
+| Cosmos  | Cosmos Hub and other Cosmos ecosystem chains                                 | `cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02`   |
+| TRON    | TRON mainnet (Base58Check `T...` or hex `41...` with optional `0x` prefix)   | `TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`              |
 
 ## Contributing
 
