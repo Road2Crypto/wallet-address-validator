@@ -5,6 +5,7 @@
 Maintained by [Road2Crypto.com](https://road2crypto.com).
 
 [![Build and Test](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/build-test.yml/badge.svg)](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/build-test.yml)
+[![CodeQL](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/github-code-scanning/codeql)
 [![Publish Package](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/publish.yml/badge.svg?event=release)](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/publish.yml)
 [![npm version](https://img.shields.io/npm/v/r2c-wallet-validator.svg)](https://www.npmjs.com/package/r2c-wallet-validator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
