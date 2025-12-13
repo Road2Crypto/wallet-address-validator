@@ -7,6 +7,9 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -15,8 +18,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "18"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Get version from release
         run: |
@@ -41,7 +44,7 @@ jobs:
       - name: Publish package or verify it exists
         run: |
           # Try to publish and capture the output
-          OUTPUT=$(npm publish --access public 2>&1 || true)
+          OUTPUT=$(npm publish --access public --provenance 2>&1 || true)
 
           # Check if the output contains the "already published" message
           if echo "$OUTPUT" | grep -q "previously published versions"; then
@@ -55,5 +58,3 @@ jobs:
             echo "$OUTPUT"
             exit 1
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
