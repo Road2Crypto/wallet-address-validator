@@ -4,6 +4,7 @@ import { testCosmos } from "../validators/cosmos";
 import { testEVM } from "../validators/evm";
 import { isValidSolana } from "../validators/solana";
 import { isValidTron, isValidTronHex } from "../validators/tron";
+import { testCardano } from "../validators/cardano";
 
 // Function to get wallet address type
 export const getWalletAddressType = (address: string): WalletType | null => {
@@ -29,6 +30,10 @@ export const getWalletAddressType = (address: string): WalletType | null => {
 
     if (testCosmos().test(address)) {
         return WalletType.COSMOS
+    }
+
+    if (testCardano().test(address)) {
+        return WalletType.CARDANO
     }
 
     return null
