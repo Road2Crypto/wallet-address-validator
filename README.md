@@ -144,8 +144,8 @@ Validates a cryptocurrency wallet address.
 
 **Parameters:**
 
-- `address` (string): The cryptocurrency wallet address to validate
-- `options` (optional): Configuration object
+- `address` (string): The cryptocurrency wallet address to validate.
+- `options` (optional): Configuration object.
   - `chains` (WalletType[]): Array of allowed wallet types to validate against. If provided, the address must match one of the specified types.
 
 **Returns:**
