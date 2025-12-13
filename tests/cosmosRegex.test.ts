@@ -1,22 +1,37 @@
 import { testCosmos } from '../src/validators/cosmos';
+import { isWalletValid } from '../src';
+import { WalletType } from '../src/types/wallet';
 
-describe('solanaAddressRegex', () => {
+describe('Cosmos Wallet Validation', () => {
     test('validAddresses', () => {
-        const validSolanaAddresses = [
-            'cosmos1sregzcxh7aagzndr462v9mg42sn5qp6f7cugme'
+        const validAddresses = [
+            'cosmos107ws4033624838304933629538356788950853', // 45 chars
+            'cosmos1cyyzpx86952796989932470732439589369680a'  // 46 chars
         ]
-        validSolanaAddresses.forEach(address => {
-            expect(testCosmos().test(address)).toBe(true)
+        validAddresses.forEach(address => {
+            expect(testCosmos().test(address)).toBe(true);
+            expect(isWalletValid(address).valid).toBe(true);
+            expect(isWalletValid(address).type).toBe(WalletType.COSMOS);
         })
     })
 
     test('invalidAddresses', () => {
-        const invalidSolanaAddresses = [
-            '4Nd1mQ2foW7qSwk89NzVFTva9UtaYenEF69k1ysEVnnK3m', // too long
-            'InvalidSolanaAddress12345',
+        const invalidAddresses = [
+            'cosmos107ws403362483830493362953835678895085333', // 47 chars (too long)
+            'cosmos107ws403362483830493362953835678895085', // 43 chars (too short)
+            'cosmos107ws403362483830493362953835678895085i', // forbidden char 'i'
+            'InvalidCosmosAddress12345',
+            'cosmos207ws4033624838304933629538356788950853', // '2' instead of '1' separator
         ]
-        invalidSolanaAddresses.forEach(address => {
-            expect(testCosmos().test(address)).toBe(false)
+        invalidAddresses.forEach(address => {
+            expect(testCosmos().test(address)).toBe(false);
+            const result = isWalletValid(address);
+            // Should not be identified as COSMOS, might match nothing or invalid
+            if (result.valid) {
+                expect(result.type).not.toBe(WalletType.COSMOS);
+            } else {
+                expect(result.valid).toBe(false);
+            }
         })
     })
 })

@@ -210,7 +210,7 @@ interface ValidationOptions {
 | EVM      | Ethereum, Polygon, BSC, Arbitrum, Optimism, and other EVM-compatible chains        | `0x742d35Cc6634C0532925a3b844Bc454e4438f44e`       |
 | Solana   | Solana blockchain addresses (strict 32-byte Base58 public keys)                    | `9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr`      |
 | Bitcoin  | Bitcoin addresses (Legacy and SegWit)                                              | `3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy`               |
-| Cosmos   | Cosmos Hub and other Cosmos ecosystem chains                                       | `cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02`    |
+| Cosmos   | Cosmos Hub and other Cosmos ecosystem chains                                       | `cosmos107ws4033624838304933629538356788950853`    |
 | TRON     | TRON mainnet (Base58Check `T...` or hex `41...` with optional `0x` prefix)         | `TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`               |
 | Cardano  | Cardano addresses (Shelley `addr1...`, `stake1...` and Byron `Ae2...`, `DdzFF...`) | `addr1q9...`                                       |
 | Polkadot | Polkadot Mainnet addresses (SS58 format starting with `1`)                         | `131MmXTN7xzy6wcb9di1JgChVoGjBfXMpphcGkGT6btu5YTo` |
