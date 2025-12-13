@@ -5,6 +5,7 @@ import { testEVM } from "../validators/evm";
 import { isValidSolana } from "../validators/solana";
 import { isValidTron, isValidTronHex } from "../validators/tron";
 import { testCardano } from "../validators/cardano";
+import { testPolkadot } from "../validators/polkadot";
 
 // Function to get wallet address type
 export const getWalletAddressType = (address: string, chains?: WalletType[]): WalletType | null => {
@@ -37,6 +38,10 @@ export const getWalletAddressType = (address: string, chains?: WalletType[]): Wa
 
     if (isChainAllowed(WalletType.CARDANO) && testCardano().test(address)) {
         return WalletType.CARDANO
+    }
+
+    if (isChainAllowed(WalletType.POLKADOT) && testPolkadot().test(address)) {
+        return WalletType.POLKADOT
     }
 
     return null
