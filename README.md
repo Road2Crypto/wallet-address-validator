@@ -1,6 +1,8 @@
-# Crypto Wallet Address Validator
+# Multi-Chain Crypto Wallet Address Validator (r2c-wallet-validator)
 
-A simple utility to validate cryptocurrency wallet addresses across multiple blockchains.
+**r2c-wallet-validator** is a comprehensive, lightweight, and high-performance utility to validate cryptocurrency wallet addresses across multiple blockchains. Built for Web3 developers, DApps, and crypto exchanges who need reliable address validation for EVM, Solana, Bitcoin, Polkadot, Cosmos, TRON, and Cardano.
+
+Maintained by [Road2Crypto.com](https://road2crypto.com).
 
 [![Build and Test](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/build-test.yml/badge.svg)](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/build-test.yml)
 [![Publish Package](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/publish.yml/badge.svg?event=release)](https://github.com/Road2Crypto/wallet-address-validator/actions/workflows/publish.yml)
@@ -23,10 +25,12 @@ A simple utility to validate cryptocurrency wallet addresses across multiple blo
 
 ## Features
 
-- Validate cryptocurrency wallet addresses across multiple blockchain networks
-- Zero dependencies for lightweight integration
-- TypeScript support with comprehensive type definitions
-- Detailed error responses for easier debugging
+- 🚀 **Multi-Chain Support**: Validate addresses for EVM (Ethereum, Polygon, BSC), Solana, Bitcoin, Polkadot, Cosmos, TRON, and Cardano.
+- 📦 **Zero Dependencies**: Exceptionally lightweight and bloat-free.
+- 🌳 **Tree-Shakable**: Optimized for modern bundlers (Webpack, Rollup, Vite) with `sideEffects: false`.
+- ⚡ **High Performance**: Regex-based and algorithmic validation for maximum speed.
+- 🛡️ **TypeScript**: Native TypeScript support with comprehensive type definitions (`.d.ts`).
+- 🔍 **Detailed Errors**: Granular error reporting for easier debugging and UI feedback.
 - Supported chains: [Chains](#supported-chains)
 
 ## Installation

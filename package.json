@@ -1,10 +1,24 @@
 {
     "name": "r2c-wallet-validator",
     "version": "1.1.2",
-    "description": "A simple utility to validate cryptocurrency wallet addresses for EVM, Solana, and Bitcoin chains.",
+    "description": "A comprehensive and lightweight utility to validate cryptocurrency wallet addresses across multiple chains like EVM, Solana, Bitcoin, Polkadot, and Cosmos. Built for high performance and accuracy.",
     "main": "dist/index.js",
     "module": "dist/index.mjs",
     "types": "dist/index.d.ts",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "engines": {
+        "node": ">=16"
+    },
     "scripts": {
         "build": "tsup src/index.ts --format cjs,esm --dts",
         "lint": "tsc",
@@ -17,17 +31,35 @@
         "type": "git",
         "url": "git+https://github.com/Road2Crypto/wallet-address-validator.git"
     },
+    "homepage": "https://github.com/Road2Crypto/wallet-address-validator#readme",
+    "bugs": {
+        "url": "https://github.com/Road2Crypto/wallet-address-validator/issues"
+    },
     "keywords": [
         "wallet",
         "address",
         "validator",
         "cryptocurrency",
+        "crypto",
+        "blockchain",
         "EVM",
         "Solana",
         "Bitcoin",
-        "Cosmos"
+        "Cosmos",
+        "Polkadot",
+        "Cardano",
+        "ethereum",
+        "btc",
+        "sol",
+        "web3",
+        "check",
+        "format",
+        "verify"
     ],
-    "author": "Road2Crypto",
+    "author": {
+        "name": "Road2Crypto",
+        "url": "https://road2crypto.com"
+    },
     "license": "MIT",
     "devDependencies": {
         "@babel/core": "7.28.5",
