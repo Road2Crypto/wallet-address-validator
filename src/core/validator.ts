@@ -1,9 +1,10 @@
 import { checkEmpty } from "../utils/string";
 import { getWalletAddressType } from "./classifier";
 import { WalletValidationResponse, ValidationErrorMessage } from "../types/validation";
+import { ValidationOptions } from "../types/options";
 
 // Function to check crypto address
-export const isWalletValid = (address: string): WalletValidationResponse => {
+export const isWalletValid = (address: string, options?: ValidationOptions): WalletValidationResponse => {
     // Remove extra spaces
     address = address.trim()
 
@@ -13,7 +14,7 @@ export const isWalletValid = (address: string): WalletValidationResponse => {
     }
 
     // Get address type and validate it
-    const walletAddressType = getWalletAddressType(address)
+    const walletAddressType = getWalletAddressType(address, options?.chains)
     if (walletAddressType === null) {
         return { valid: false, error: { statusCode: 400, message: ValidationErrorMessage.INVALID_ADDRESS } }
     }

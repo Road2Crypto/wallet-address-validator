@@ -66,6 +66,19 @@ import {
   WalletType,
 } from "r2c-wallet-validator";
 
+// 1. Validate specific chains (only check Bitcoin and EVM)
+const specificResult = isWalletValid(
+  "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+  {
+    chains: [WalletType.BITCOIN, WalletType.EVM],
+  }
+); // Valid, type: EVM
+
+// 2. Validate against a single specific chain
+const singleChainResult = isWalletValid("InvalidBitcoin", {
+  chains: [WalletType.BITCOIN],
+}); // Invalid
+
 const addresses = [
   "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // EVM
   "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy", // Bitcoin
@@ -120,13 +133,15 @@ addresses.forEach((address) => {
 
 ### Functions
 
-#### `isWalletValid(address: string): WalletValidationResponse`
+#### `isWalletValid(address: string, options?: ValidationOptions): WalletValidationResponse`
 
 Validates a cryptocurrency wallet address.
 
 **Parameters:**
 
 - `address` (string): The cryptocurrency wallet address to validate
+- `options` (optional): Configuration object
+  - `chains` (WalletType[]): Array of allowed wallet types to validate against. If provided, the address must match one of the specified types.
 
 **Returns:**
 
@@ -173,6 +188,14 @@ interface WalletValidationResponse {
   valid: boolean;
   type?: WalletType;
   error?: WalletValidationResponseError;
+}
+```
+
+#### `ValidationOptions`
+
+```typescript
+interface ValidationOptions {
+  chains?: WalletType[];
 }
 ```
 
