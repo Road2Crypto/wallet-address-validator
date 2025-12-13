@@ -1,5 +1,9 @@
-import { WalletType } from "../types/wallet"
-import { testEVM, testSolana, testBitcoin, testCosmos, isValidTron, isValidSolana, isValidTronHex } from "../validation/address"
+import { WalletType } from "../types/wallet";
+import { testBitcoin } from "../validators/bitcoin";
+import { testCosmos } from "../validators/cosmos";
+import { testEVM } from "../validators/evm";
+import { isValidSolana } from "../validators/solana";
+import { isValidTron, isValidTronHex } from "../validators/tron";
 
 // Function to get wallet address type
 export const getWalletAddressType = (address: string): WalletType | null => {

@@ -60,7 +60,11 @@ if (!result.valid) {
 
 ```typescript
 // Advanced usage with all supported address types
-import { isWalletValid, ValidationErrorMessage, WalletType } from "r2c-wallet-validator";
+import {
+  isWalletValid,
+  ValidationErrorMessage,
+  WalletType,
+} from "r2c-wallet-validator";
 
 const addresses = [
   "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // EVM
@@ -79,7 +83,9 @@ addresses.forEach((address) => {
         console.log(`Address: ${address} is invalid: Address is empty.`);
         break;
       case ValidationErrorMessage.INVALID_ADDRESS:
-        console.log(`Address: ${address} is invalid: Address format is incorrect.`);
+        console.log(
+          `Address: ${address} is invalid: Address format is incorrect.`
+        );
         break;
       default:
         console.log(`Address: ${address} is invalid.`);
@@ -119,9 +125,11 @@ addresses.forEach((address) => {
 Validates a cryptocurrency wallet address.
 
 **Parameters:**
+
 - `address` (string): The cryptocurrency wallet address to validate
 
 **Returns:**
+
 - `WalletValidationResponse`: An object containing validation results:
   - When valid: `{ valid: true, type: WalletType }`
   - When invalid: `{ valid: false, error: { statusCode: number, message: ValidationErrorMessage } }`
@@ -132,8 +140,8 @@ Validates a cryptocurrency wallet address.
 
 ```typescript
 enum ValidationErrorMessage {
-  EMPTY_ADDRESS = "Address is empty",
-  INVALID_ADDRESS = "Invalid address format"
+  EMPTY_ADDRESS = "The provided address is empty.",
+  INVALID_ADDRESS = "The provided address does not match any supported wallet address patterns.",
 }
 ```
 
@@ -145,7 +153,7 @@ enum WalletType {
   SOLANA = "solana",
   BITCOIN = "bitcoin",
   COSMOS = "cosmos",
-  TRON = "tron"
+  TRON = "tron",
 }
 ```
 
@@ -170,13 +178,13 @@ interface WalletValidationResponse {
 
 ## Supported Chains
 
-| Chain   | Description                                                                 | Example Address                                   |
-|---------|-----------------------------------------------------------------------------|---------------------------------------------------|
-| EVM     | Ethereum, Polygon, BSC, Arbitrum, Optimism, and other EVM-compatible chains | `0x742d35Cc6634C0532925a3b844Bc454e4438f44e`      |
-| Solana  | Solana blockchain addresses (strict 32-byte Base58 public keys)             | `9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr`     |
-| Bitcoin | Bitcoin addresses (Legacy and SegWit)                                        | `3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy`              |
-| Cosmos  | Cosmos Hub and other Cosmos ecosystem chains                                 | `cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02`   |
-| TRON    | TRON mainnet (Base58Check `T...` or hex `41...` with optional `0x` prefix)   | `TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`              |
+| Chain   | Description                                                                 | Example Address                                 |
+| ------- | --------------------------------------------------------------------------- | ----------------------------------------------- |
+| EVM     | Ethereum, Polygon, BSC, Arbitrum, Optimism, and other EVM-compatible chains | `0x742d35Cc6634C0532925a3b844Bc454e4438f44e`    |
+| Solana  | Solana blockchain addresses (strict 32-byte Base58 public keys)             | `9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr`   |
+| Bitcoin | Bitcoin addresses (Legacy and SegWit)                                       | `3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy`            |
+| Cosmos  | Cosmos Hub and other Cosmos ecosystem chains                                | `cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02` |
+| TRON    | TRON mainnet (Base58Check `T...` or hex `41...` with optional `0x` prefix)  | `TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`            |
 
 ## Contributing
 

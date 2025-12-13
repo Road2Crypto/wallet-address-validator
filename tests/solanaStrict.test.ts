@@ -1,5 +1,5 @@
-import { isValidSolana } from '../src/validation/address';
-import { getWalletAddressType } from '../src/utils/getWalletAddressType';
+import { isValidSolana } from '../src/validators/solana';
+import { getWalletAddressType } from '../src/core/classifier';
 import { WalletType } from '../src/types/wallet';
 
 describe('solanaStrict', () => {

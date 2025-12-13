@@ -1,4 +1,4 @@
-import { testEVM } from "../src/validation/address";
+import { testEVM } from '../src/validators/evm';
 
 describe('evmAddressRegex', () => {
     test('validEvmAddresses', () => {

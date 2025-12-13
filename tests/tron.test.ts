@@ -1,5 +1,5 @@
-import { isValidTron, isValidTronHex } from '../src/validation/address';
-import { getWalletAddressType } from '../src/utils/getWalletAddressType';
+import { isValidTron, isValidTronHex } from '../src/validators/tron';
+import { getWalletAddressType } from '../src/core/classifier';
 import { WalletType } from '../src/types/wallet';
 
 describe('tronAddress', () => {
