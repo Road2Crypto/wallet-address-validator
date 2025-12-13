@@ -7,4 +7,9 @@ export enum WalletType {
     TRON = 'tron',
     CARDANO = 'cardano',
     POLKADOT = 'polkadot',
+    LITECOIN = 'litecoin',
+    DOGECOIN = 'dogecoin',
+    SUI = 'sui',
+    APTOS = 'aptos',
+    TON = 'ton',
 }

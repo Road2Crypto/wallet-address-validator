@@ -6,6 +6,11 @@ import { isValidSolana } from "../validators/solana";
 import { isValidTron, isValidTronHex } from "../validators/tron";
 import { testCardano } from "../validators/cardano";
 import { testPolkadot } from "../validators/polkadot";
+import { testLitecoin } from "../validators/litecoin";
+import { testDogecoin } from "../validators/dogecoin";
+import { testSui } from "../validators/sui";
+import { testAptos } from "../validators/aptos";
+import { testTon } from "../validators/ton";
 
 // Function to get wallet address type
 export const getWalletAddressType = (address: string, chains?: WalletType[]): WalletType | null => {
@@ -42,6 +47,26 @@ export const getWalletAddressType = (address: string, chains?: WalletType[]): Wa
 
     if (isChainAllowed(WalletType.POLKADOT) && testPolkadot().test(address)) {
         return WalletType.POLKADOT
+    }
+
+    if (isChainAllowed(WalletType.LITECOIN) && testLitecoin().test(address)) {
+        return WalletType.LITECOIN
+    }
+
+    if (isChainAllowed(WalletType.DOGECOIN) && testDogecoin().test(address)) {
+        return WalletType.DOGECOIN
+    }
+
+    if (isChainAllowed(WalletType.SUI) && testSui().test(address)) {
+        return WalletType.SUI
+    }
+
+    if (isChainAllowed(WalletType.APTOS) && testAptos().test(address)) {
+        return WalletType.APTOS
+    }
+
+    if (isChainAllowed(WalletType.TON) && testTon().test(address)) {
+        return WalletType.TON
     }
 
     return null
