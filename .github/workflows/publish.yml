@@ -43,15 +43,22 @@ jobs:
 
       - name: Publish package or verify it exists
         run: |
-          # Try to publish and capture the output
-          OUTPUT=$(npm publish --access public --provenance 2>&1 || true)
+          # Try to publish and capture output + exit code
+          # We use a temporary file because capturing output in variable swallows exit code with `set -e` or requires complex piping
+          set +e
+          OUTPUT=$(npm publish --access public --provenance 2>&1)
+          EXIT_CODE=$?
+          set -e
 
-          # Check if the output contains the "already published" message
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "Package successfully published!"
+            echo "$OUTPUT"
+            exit 0
+          fi
+
+          # If failed, check if it's because version already exists
           if echo "$OUTPUT" | grep -q "previously published versions"; then
             echo "Package version $VERSION already exists on npm registry. This is OK."
-            exit 0
-          elif echo "$OUTPUT" | grep -q "published"; then
-            echo "Package successfully published!"
             exit 0
           else
             echo "An unexpected error occurred during publishing:"
