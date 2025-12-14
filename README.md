@@ -30,6 +30,7 @@ Maintained by [Road2Crypto.com](https://road2crypto.com).
 - 📦 **Zero Dependencies**: Exceptionally lightweight and bloat-free.
 - 🌳 **Tree-Shakable**: Optimized for modern bundlers (Webpack, Rollup, Vite) with `sideEffects: false`.
 - ⚡ **High Performance**: Regex-based and algorithmic validation for maximum speed.
+- 🎯 **Selective Validation**: Configure the validator to only accept specific chains relevant to your application.
 - 🛡️ **TypeScript**: Native TypeScript support with comprehensive type definitions (`.d.ts`).
 - 🔍 **Detailed Errors**: Granular error reporting for easier debugging and UI feedback.
 - Supported chains: [Chains](#supported-chains)
