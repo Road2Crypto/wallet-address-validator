@@ -22,3 +22,9 @@ export const isWalletValid = (address: string, options?: ValidationOptions): Wal
     // Return success response
     return { valid: true, type: walletAddressType }
 }
+
+// Function to check if address is valid (returns boolean)
+export const isAddress = (address: string, options?: ValidationOptions): boolean => {
+    const result = isWalletValid(address, options);
+    return result.valid;
+}

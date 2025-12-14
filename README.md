@@ -148,6 +148,16 @@ Validates a cryptocurrency wallet address.
 - `options` (optional): Configuration object.
   - `chains` (WalletType[]): Array of allowed wallet types to validate against. If provided, the address must match one of the specified types.
 
+#### `isAddress(address: string, options?: ValidationOptions): boolean`
+
+Checks if a cryptocurrency wallet address is valid. Returns `true` if valid, `false` otherwise.
+
+**Parameters:**
+
+- `address` (string): The cryptocurrency wallet address to validate.
+- `options` (optional): Configuration object.
+  - `chains` (WalletType[]): Array of allowed wallet types to validate against. If provided, the address must match one of the specified types.
+
 **Returns:**
 
 - `WalletValidationResponse`: An object containing validation results:
