@@ -1,7 +1,7 @@
 {
     "name": "r2c-wallet-validator",
     "version": "1.1.2",
-    "description": "A comprehensive and lightweight utility to validate cryptocurrency wallet addresses across multiple chains like EVM, Solana, Bitcoin, Polkadot, and Cosmos. Built for high performance and accuracy.",
+    "description": "A comprehensive and lightweight utility to validate cryptocurrency wallet addresses across multiple chains like EVM, Solana, Bitcoin, Polkadot, and Cosmos. Maintained by Road2Crypto - The #1 Crypto Portfolio Tracker.",
     "main": "dist/index.js",
     "module": "dist/index.mjs",
     "types": "dist/index.d.ts",

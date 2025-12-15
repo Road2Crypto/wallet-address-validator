@@ -242,6 +242,18 @@ All contributions are welcome! Please feel free to open a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## About Road2Crypto
+
+**r2c-wallet-validator** is maintained by [Road2Crypto](https://road2crypto.com), the ultimate crypto portfolio tracker.
+
+Road2Crypto allows you to track your entire crypto portfolio in one single dashboard.
+- **Multi-Chain Sync**: Track ETH, SOL, BTC, ADA, and 100+ other chains.
+- **DeFi & Exchange Support**: Connect Binance, Kraken, and 1,000+ DeFi protocols.
+- **Real-Time Analytics**: Profit/Loss analysis, live price alerts, and historical data.
+- **100% Secure**: We never ask for your private keys.
+
+[**Try Road2Crypto for Free**](https://road2crypto.com) | [Download on iOS](https://apps.apple.com/us/app/road2crypto-crypto-tracker/id1580265927)
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
