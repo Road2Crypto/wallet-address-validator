@@ -1,4 +1,4 @@
-# Multi-Chain Crypto Wallet Address Validator (r2c-wallet-validator)
+# Multi-Chain Crypto Wallet Address Validator
 
 **r2c-wallet-validator** is a comprehensive, lightweight, and high-performance utility to validate cryptocurrency wallet addresses across multiple blockchains. Built for Web3 developers, DApps, and crypto exchanges who need reliable address validation.
 
