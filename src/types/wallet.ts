@@ -12,4 +12,5 @@ export enum WalletType {
     SUI = 'sui',
     APTOS = 'aptos',
     TON = 'ton',
+    XRP = 'xrp',
 }

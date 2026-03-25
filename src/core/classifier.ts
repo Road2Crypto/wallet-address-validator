@@ -11,6 +11,7 @@ import { testDogecoin } from "../validators/dogecoin";
 import { testSui } from "../validators/sui";
 import { testAptos } from "../validators/aptos";
 import { testTon } from "../validators/ton";
+import { testXrp } from "../validators/xrp";
 
 // Function to get wallet address type
 export const getWalletAddressType = (address: string, chains?: WalletType[]): WalletType | null => {
@@ -67,6 +68,10 @@ export const getWalletAddressType = (address: string, chains?: WalletType[]): Wa
 
     if (isChainAllowed(WalletType.TON) && testTon().test(address)) {
         return WalletType.TON
+    }
+
+    if (isChainAllowed(WalletType.XRP) && testXrp().test(address)) {
+        return WalletType.XRP
     }
 
     return null
