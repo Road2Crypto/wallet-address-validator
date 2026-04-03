@@ -44,7 +44,7 @@ export function isValidXrpXAddress(address: string): boolean {
     const isTestnet = hasPrefix(payload, X_ADDRESS_TESTNET_PREFIX);
     if (!isMainnet && !isTestnet) return false;
 
-    const flag = payload[22];
+    const flag = payload[22]!;
     if (flag >= 2) return false;
 
     if (flag === 0) {
