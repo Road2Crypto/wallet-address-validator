@@ -1,19 +1,20 @@
 import { isWalletValid } from '../src';
 import { WalletType } from '../src/types/wallet';
-import { testXrp } from '../src/validators/xrp';
+import { isValidXrp, isValidXrpClassicAddress, isValidXrpXAddress } from '../src/validators/xrp';
 
 describe('XRP Validation', () => {
     describe('Classic addresses (r...)', () => {
         const validAddresses = [
             'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
-            'rN7n3473SaZBCG4dFL85RGwBKnDXCB6e5E',
-            'r3AdW9AhbsB4mGCNgKSNqWYnAW7WqTWD52',
-            'rDsbeomae4FXwgQTJp9Rs64Qg9vDiTCdBv',
+            'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59',
+            'rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY',
+            'rrrrrrrrrrrrrrrrrrrrrhoLvTp',
         ];
 
         it('should match valid XRP classic addresses', () => {
             validAddresses.forEach(addr => {
-                expect(testXrp().test(addr)).toBe(true);
+                expect(isValidXrpClassicAddress(addr)).toBe(true);
+                expect(isValidXrp(addr)).toBe(true);
             });
         });
 
@@ -28,12 +29,15 @@ describe('XRP Validation', () => {
 
     describe('X-addresses (X...)', () => {
         const validAddresses = [
-            'X7AcgcsBL4QSjdqo1hM7o1YSgQtNKr2J7tEqq5n3Nz6SLT',
+            'X7AcgcsBL6XDcUb289X4mJ8djcdyKaB5hJDWMArnXr61cqZ',
+            'XV5sbjUmgPpvXv4ixFWZ5ptAYZ6PD2qwGkhgc48zzcx6Gkr',
+            'T719a5UwUCnEs54UsxG9CJYYDhwmFCqkr7wxCcNcfZ6p5GZ',
         ];
 
         it('should match valid XRP X-addresses', () => {
             validAddresses.forEach(addr => {
-                expect(testXrp().test(addr)).toBe(true);
+                expect(isValidXrpXAddress(addr)).toBe(true);
+                expect(isValidXrp(addr)).toBe(true);
             });
         });
 
@@ -49,17 +53,19 @@ describe('XRP Validation', () => {
     describe('Invalid addresses', () => {
         const invalidAddresses = [
             '',
-            'r',                                         
-            'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyThXXXXXXX', 
+            'r',
+            'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyT1',
+            'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyThXXXXXXX',
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            'rHb9CJAWyB4rj91VRWn96DkukG4bwd0yTh', 
-            'RHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',        
+            'XVLhHMPHU98es4dbozjVtdWzVrDjtV5fdx1mHp98tDMoQXa',
+            'XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8zeUygYrCgrPh',
+            'RHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
             'not-an-address',
         ];
 
         it('should reject invalid addresses', () => {
             invalidAddresses.forEach(addr => {
-                expect(testXrp().test(addr)).toBe(false);
+                expect(isValidXrp(addr)).toBe(false);
             });
         });
     });

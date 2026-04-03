@@ -1,29 +1,36 @@
-
 // Base58 utilities (Bitcoin alphabet)
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-const BASE58_INDEX: Record<string, number> = {};
-for (let i = 0; i < BASE58_ALPHABET.length; i++) {
-    const ch = BASE58_ALPHABET.charAt(i);
-    BASE58_INDEX[ch] = i;
+const XRP_BASE58_ALPHABET = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
+
+function createBase58Index(alphabet: string): Record<string, number> {
+    const index: Record<string, number> = {};
+    for (let i = 0; i < alphabet.length; i++) {
+        const ch = alphabet.charAt(i);
+        index[ch] = i;
+    }
+    return index;
 }
+
+const BASE58_INDEX = createBase58Index(BASE58_ALPHABET);
+const XRP_BASE58_INDEX = createBase58Index(XRP_BASE58_ALPHABET);
 
 /**
  * Decode Base58 string into bytes. Returns null for invalid characters.
  */
-export function base58Decode(input: string): Uint8Array | null {
+function decodeBase58(input: string, alphabet: string, alphabetIndex: Record<string, number>): Uint8Array | null {
     if (input.length === 0) return new Uint8Array([]);
     const base = 58;
     const base256 = 256;
 
     // Count leading zeros
     let zeros = 0;
-    while (zeros < input.length && input.charAt(zeros) === '1') zeros++;
+    while (zeros < input.length && input.charAt(zeros) === alphabet.charAt(0)) zeros++;
 
     // Convert characters to base58 digits
     const digits: number[] = [];
     for (let i = 0; i < input.length; i++) {
         const ch = input.charAt(i);
-        const v = BASE58_INDEX[ch];
+        const v = alphabetIndex[ch];
         if (v === undefined) return null;
         digits.push(v);
     }
@@ -48,4 +55,12 @@ export function base58Decode(input: string): Uint8Array | null {
     for (let i = 0; i < zeros; i++) out.push(0);
 
     return new Uint8Array(out.reverse());
+}
+
+export function base58Decode(input: string): Uint8Array | null {
+    return decodeBase58(input, BASE58_ALPHABET, BASE58_INDEX);
+}
+
+export function base58DecodeXrp(input: string): Uint8Array | null {
+    return decodeBase58(input, XRP_BASE58_ALPHABET, XRP_BASE58_INDEX);
 }

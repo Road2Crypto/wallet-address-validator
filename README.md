@@ -232,7 +232,7 @@ interface ValidationOptions {
 | Sui      | Sui addresses (Hex `0x...`, approx 66 chars)                                       | `0x1a052c15a0c3241b1842b1096053f0b2a8d3ccdd5a747926b471e956bc1b38f8` |
 | Aptos    | Aptos addresses (Hex `0x...`, approx 66 chars)                                     | `0x83e24403164007f3544d03e92e5e1e76b1f236e7a63d91f24d9c4912e75e927c` |
 | TON      | TON addresses (Base64-like `E...`/`U...`/`k...`/`0...` 48 chars)                   | `EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8GB0aH`                   |
-| XRP      | XRP classic addresses (`r...`, 25-35 chars) and X-addresses (`X...`, 46 chars)     | `rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh`                                 |
+| XRP      | XRP classic addresses (`r...`, 25-35 chars) and X-addresses (`X...`/`T...`, 47 chars) | `rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh`                                 |
 
 ## Contributing
 

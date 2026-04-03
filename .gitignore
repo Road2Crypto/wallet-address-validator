@@ -3,3 +3,5 @@ node_modules/
 
 # Ignore build output directories
 dist/
+
+.DS_Store
