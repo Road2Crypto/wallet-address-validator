@@ -1,0 +1,62 @@
+# action.yml
+
+name: Use Node via NVM
+description: Select and persist the Node.js version from the repository version file
+
+# Repository version file is the only Node source of truth for CI.
+
+inputs:
+  node-version:
+    description: Ignored because the repository version file owns the runtime
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Resolve Node version
+      id: resolve
+      shell: bash
+      run: |
+        set -euo pipefail
+        if [ ! -f .node-version ]; then
+          echo "::error::.node-version file not found at repository root."
+          exit 1
+        fi
+        RESOLVED=$(cat .node-version | tr -d ' \t\r\n')
+        RESOLVED=${RESOLVED#v}
+        if [ -z "$RESOLVED" ]; then
+          echo "::error::.node-version is empty."
+          exit 1
+        fi
+        echo "Resolved Node version: $RESOLVED"
+        echo "RESOLVED_NODE_VERSION=$RESOLVED" >> "$GITHUB_ENV"
+
+    - name: Use Node ${{ env.RESOLVED_NODE_VERSION }}
+      shell: bash
+      run: |
+        source ~/.bash_profile || true
+        if ! command -v nvm >/dev/null 2>&1; then
+          echo "nvm not found on runner; ensure it is installed in the runner image"
+          exit 1
+        fi
+        export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+        nvm install "$RESOLVED_NODE_VERSION"
+        nvm use "$RESOLVED_NODE_VERSION"
+        # Node 24.16.0 ships npm 11, so a different major means the runner selected the wrong toolchain.
+        EXPECTED_NPM_MAJOR=11
+        NPM_MAJOR=$(npm -v | cut -d. -f1)
+        if [ "$NPM_MAJOR" != "$EXPECTED_NPM_MAJOR" ]; then
+          echo "::error::Expected npm major $EXPECTED_NPM_MAJOR but found $(npm -v)."
+          exit 1
+        fi
+
+        NODE_PATH=$(nvm which "$RESOLVED_NODE_VERSION")
+        NODE_BIN_DIR=$(dirname "$NODE_PATH")
+
+        echo "NVM_DIR=$NVM_DIR" >> "$GITHUB_ENV"
+        echo "NODE_VERSION=$RESOLVED_NODE_VERSION" >> "$GITHUB_ENV"
+        echo "$NODE_BIN_DIR" >> "$GITHUB_PATH"
+
+        echo "Node version: $(node -v)"
+        echo "NPM version: $(npm -v)"
+        echo "Node path: $NODE_PATH"

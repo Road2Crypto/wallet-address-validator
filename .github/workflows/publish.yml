@@ -12,16 +12,12 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Update npm
-        run: npm install -g npm@latest
+      - name: Setup Node.js
+        uses: ./.github/actions/use-node
 
       - name: Get version from release
         run: |
@@ -30,7 +26,7 @@ jobs:
           echo "Publishing version $VERSION"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run tests
         run: npm test
