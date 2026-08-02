@@ -1,8 +1,15 @@
+# publish.yml
+
 name: Publish Package
 
 on:
   release:
     types: [created]
+
+concurrency:
+  group: publish_package
+  queue: max
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -22,8 +29,45 @@ jobs:
       - name: Get version from release
         run: |
           VERSION=${GITHUB_REF#refs/tags/}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Publishing version $VERSION"
+
+      - name: Validate release version
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          git fetch origin "$DEFAULT_BRANCH:refs/remotes/origin/$DEFAULT_BRANCH"
+          if ! git merge-base --is-ancestor HEAD "origin/$DEFAULT_BRANCH"; then
+            echo "Release commit is not contained in $DEFAULT_BRANCH."
+            exit 1
+          fi
+
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          npm version "$VERSION" --no-git-tag-version --allow-same-version --ignore-scripts
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+          node .github/scripts/assertVersionNotLower.js "$CURRENT_VERSION" "$PACKAGE_VERSION"
+
+          EXISTING_VERSION=$(npm view "$PACKAGE_NAME@$PACKAGE_VERSION" version 2> /dev/null || true)
+          if [ "$EXISTING_VERSION" = "$PACKAGE_VERSION" ]; then
+            echo "VERSION_ALREADY_PUBLISHED=true" >> "$GITHUB_ENV"
+            echo "Package version $PACKAGE_VERSION already exists on npm registry."
+            exit 0
+          fi
+
+          node -e 'const version = process.argv[1]; if (version.includes("-")) throw new Error(`VERSION_PRERELEASE_UNSUPPORTED: ${version}`)' "$PACKAGE_VERSION"
+
+          LATEST_VERSION=$(npm view "$PACKAGE_NAME" version)
+          DEFAULT_VERSION=$(git show "origin/$DEFAULT_BRANCH:package.json" | node -e 'const fs = require("fs"); console.log(JSON.parse(fs.readFileSync(0, "utf8")).version)')
+          if [ "$DEFAULT_VERSION" != "$LATEST_VERSION" ]; then
+            echo "Default branch version $DEFAULT_VERSION does not match npm latest $LATEST_VERSION. Merge the pending version synchronization first."
+            exit 1
+          fi
+
+          node .github/scripts/assertVersionNotLower.js "$LATEST_VERSION" "$PACKAGE_VERSION"
+          echo "VERSION_ALREADY_PUBLISHED=false" >> "$GITHUB_ENV"
+          echo "Updated package.json to version $PACKAGE_VERSION"
 
       - name: Install dependencies
         run: npm ci
@@ -34,32 +78,176 @@ jobs:
       - name: Build package
         run: npm run build
 
-      - name: Update package version
-        run: |
-          npm version $VERSION --no-git-tag-version
-          echo "Updated package.json to version $VERSION"
-
       - name: Publish package or verify it exists
         run: |
-          # Try to publish and capture output + exit code
-          # We use a temporary file because capturing output in variable swallows exit code with `set -e` or requires complex piping
+          if [ "$VERSION_ALREADY_PUBLISHED" = "true" ]; then
+            echo "Package version $VERSION is already published."
+            exit 0
+          fi
+
+          # Capture npm output while preserving its exit code.
           set +e
-          OUTPUT=$(npm publish --access public --provenance 2>&1)
+          OUTPUT=$(npm publish --ignore-scripts --access public --provenance 2>&1)
           EXIT_CODE=$?
           set -e
 
-          if [ $EXIT_CODE -eq 0 ]; then
+          if [ "$EXIT_CODE" -eq 0 ]; then
             echo "Package successfully published!"
             echo "$OUTPUT"
             exit 0
           fi
 
-          # If failed, check if it's because version already exists
-          if echo "$OUTPUT" | grep -q "previously published versions"; then
-            echo "Package version $VERSION already exists on npm registry. This is OK."
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view "$PACKAGE_NAME@$PACKAGE_VERSION" version 2> /dev/null || true)
+
+          if [ "$PUBLISHED_VERSION" = "$PACKAGE_VERSION" ]; then
+            echo "Package version $PACKAGE_VERSION already exists on npm registry. This is OK."
             exit 0
           else
             echo "An unexpected error occurred during publishing:"
             echo "$OUTPUT"
             exit 1
           fi
+
+  sync_version:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      RELEASE_TAG: ${{ github.event.release.tag_name }}
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Setup Node.js
+        uses: ./.github/actions/use-node
+
+      - name: Prepare version files
+        id: version
+        run: |
+          RELEASE_COMMIT=$(git rev-list -n 1 "refs/tags/$RELEASE_TAG")
+          if [ -z "$RELEASE_COMMIT" ] || ! git merge-base --is-ancestor "$RELEASE_COMMIT" HEAD; then
+            echo "Release $RELEASE_TAG is not contained in $DEFAULT_BRANCH."
+            exit 1
+          fi
+
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          npm version "$RELEASE_TAG" --no-git-tag-version --allow-same-version --ignore-scripts
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          export PACKAGE_VERSION
+
+          if ! node .github/scripts/assertVersionNotLower.js "$CURRENT_VERSION" "$PACKAGE_VERSION"; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Default branch version $CURRENT_VERSION is newer than release $PACKAGE_VERSION. No synchronization is required."
+            exit 0
+          fi
+
+          node -e 'const manifest = require("./package.json"); const lock = require("./package-lock.json"); const expected = process.env.PACKAGE_VERSION; if (manifest.version !== expected || lock.version !== expected || lock.packages?.[""]?.version !== expected) throw new Error("Package versions are not synchronized")'
+
+          BRANCH_NAME="automation/sync_package_version_$PACKAGE_VERSION"
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+          echo "package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+
+          if git diff --quiet -- package.json package-lock.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Package files already contain version $PACKAGE_VERSION."
+            exit 0
+          fi
+
+          if ! git diff --quiet -- . ':(exclude)package.json' ':(exclude)package-lock.json'; then
+            echo "Version preparation changed files outside the package manifests."
+            exit 1
+          fi
+
+          if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            echo "Version preparation created unexpected files."
+            exit 1
+          fi
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Check version synchronization state
+        if: steps.version.outputs.changed == 'true'
+        id: synchronization
+        env:
+          BRANCH_NAME: ${{ steps.version.outputs.branch_name }}
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_VERSION: ${{ steps.version.outputs.package_version }}
+        run: |
+          EXISTING_PR_URL=$(gh pr list --base "$DEFAULT_BRANCH" --head "$BRANCH_NAME" --state open --limit 1 --json url --jq '.[0].url // empty')
+          CLOSED_PR_URL=$(gh pr list --base "$DEFAULT_BRANCH" --head "$BRANCH_NAME" --state closed --limit 1 --json url --jq '.[0].url // empty')
+          MERGED_PR_URL=$(gh pr list --base "$DEFAULT_BRANCH" --head "$BRANCH_NAME" --state merged --limit 1 --json url --jq '.[0].url // empty')
+
+          if [ -z "$EXISTING_PR_URL" ] && { [ -n "$CLOSED_PR_URL" ] || [ -n "$MERGED_PR_URL" ]; }; then
+            echo "A completed version synchronization already exists and requires manual review before retrying."
+            exit 1
+          fi
+
+          if git ls-remote --exit-code --heads origin "$BRANCH_NAME" > /dev/null 2>&1; then
+            git fetch origin "$BRANCH_NAME:refs/remotes/origin/$BRANCH_NAME"
+
+            if ! git diff --quiet "HEAD...origin/$BRANCH_NAME" -- . ':(exclude)package.json' ':(exclude)package-lock.json'; then
+              echo "Existing version branch contains changes outside the package manifests."
+              exit 1
+            fi
+
+            if ! cmp -s <(git show "origin/$BRANCH_NAME:package.json") package.json || ! cmp -s <(git show "origin/$BRANCH_NAME:package-lock.json") package-lock.json; then
+              echo "Existing version branch does not match the prepared package manifests."
+              exit 1
+            fi
+
+            if [ -n "$EXISTING_PR_URL" ]; then
+              echo "Version synchronization already exists at $EXISTING_PR_URL"
+              echo "create_branch=false" >> "$GITHUB_OUTPUT"
+              echo "create_pr=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            git restore package.json package-lock.json
+            git switch --create "$BRANCH_NAME" --track "origin/$BRANCH_NAME"
+            node -e 'const manifest = require("./package.json"); const lock = require("./package-lock.json"); const expected = process.env.PACKAGE_VERSION; if (manifest.version !== expected || lock.version !== expected || lock.packages?.[""]?.version !== expected) throw new Error("Existing version branch has the wrong package version")'
+            echo "create_branch=false" >> "$GITHUB_OUTPUT"
+          else
+            if [ -n "$EXISTING_PR_URL" ]; then
+              echo "Existing version pull request is missing its branch."
+              exit 1
+            fi
+            echo "create_branch=true" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "create_pr=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create version branch
+        if: steps.synchronization.outputs.create_branch == 'true'
+        env:
+          BRANCH_NAME: ${{ steps.version.outputs.branch_name }}
+          PACKAGE_VERSION: ${{ steps.version.outputs.package_version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --create "$BRANCH_NAME"
+          git add package.json package-lock.json
+          git commit -m "Sync package version to $PACKAGE_VERSION"
+          git push --set-upstream origin "$BRANCH_NAME"
+
+      - name: Create version pull request
+        if: steps.synchronization.outputs.create_pr == 'true'
+        env:
+          BRANCH_NAME: ${{ steps.version.outputs.branch_name }}
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_VERSION: ${{ steps.version.outputs.package_version }}
+        run: |
+          gh pr create \
+            --base "$DEFAULT_BRANCH" \
+            --head "$BRANCH_NAME" \
+            --title "Sync package version to $PACKAGE_VERSION" \
+            --body "Synchronizes package.json and package-lock.json with npm release $PACKAGE_VERSION.
+
+          This pull request requires manual review and merge."
