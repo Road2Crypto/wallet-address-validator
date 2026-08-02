@@ -17,6 +17,7 @@ Maintained by [Road2Crypto.com](https://road2crypto.com).
 - [Usage](#usage)
   - [Basic Example](#basic-example)
   - [Advanced Example](#advanced-example)
+  - [EVM Checksum Validation](#evm-checksum-validation)
 - [API Reference](#api-reference)
   - [Functions](#functions)
   - [Types](#types)
@@ -27,7 +28,7 @@ Maintained by [Road2Crypto.com](https://road2crypto.com).
 ## Features
 
 - 🚀 **Multi-Chain Support**: Validate addresses for EVM (Ethereum, Polygon, BSC), Solana, Bitcoin, Polkadot, Cosmos, TRON, and Cardano.
-- 📦 **Zero Dependencies**: Exceptionally lightweight and bloat-free.
+- 🔐 **Audited Hashing**: Bundles only the audited Keccak and SHA 256 code needed for checksum validation, with zero runtime dependencies.
 - 🌳 **Tree-Shakable**: Optimized for modern bundlers (Webpack, Rollup, Vite) with `sideEffects: false`.
 - ⚡ **High Performance**: Regex-based and algorithmic validation for maximum speed.
 - 🎯 **Selective Validation**: Configure the validator to only accept specific chains relevant to your application.
@@ -85,6 +86,15 @@ const singleChainResult = isWalletValid("InvalidBitcoin", {
   chains: [WalletType.BITCOIN],
 }); // Invalid
 
+// 3. Validate an Ethereum checksum with the EIP 155 chain ID
+const ethereumResult = isWalletValid(
+  "0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed",
+  {
+    chains: [WalletType.EVM],
+    evmChainId: 1,
+  }
+); // Valid, type: EVM
+
 const addresses = [
   "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // EVM
   "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy", // Bitcoin
@@ -135,6 +145,26 @@ addresses.forEach((address) => {
 });
 ```
 
+### EVM Checksum Validation
+
+Pass `evmChainId` when the caller knows the concrete EVM network and wants mixed-case checksum validation:
+
+```typescript
+const ethereum = isWalletValid(
+  "0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed",
+  { chains: [WalletType.EVM], evmChainId: 1 }
+);
+
+const rootstock = isWalletValid(
+  "0x5aaEB6053f3e94c9b9a09f33669435E7ef1bEAeD",
+  { chains: [WalletType.EVM], evmChainId: 30 }
+);
+```
+
+`evmChainId` is a positive safe integer containing the public EIP-155 network identifier, not an internal application or database identifier. Rootstock mainnet `30` and testnet `31` use the chain-aware [EIP-1191](https://eips.ethereum.org/EIPS/eip-1191) checksum. For chain IDs that have not opted into EIP-1191, the validator uses [EIP-55](https://eips.ethereum.org/EIPS/eip-55).
+
+Lowercase and uppercase address bodies remain valid unchecksummed forms. Mixed-case addresses must match the checksum for the supplied network. When `evmChainId` is omitted, EVM validation checks the address format only to preserve existing behavior.
+
 ## API Reference
 
 ### Functions
@@ -148,6 +178,7 @@ Validates a cryptocurrency wallet address.
 - `address` (string): The cryptocurrency wallet address to validate.
 - `options` (optional): Configuration object.
   - `chains` (WalletType[]): Array of allowed wallet types to validate against. If provided, the address must match one of the specified types.
+  - `evmChainId` (number): Optional positive safe integer containing the EIP-155 network identifier used for EVM checksum validation.
 
 #### `isAddress(address: string, options?: ValidationOptions): boolean`
 
@@ -158,6 +189,7 @@ Checks if a cryptocurrency wallet address is valid. Returns `true` if valid, `fa
 - `address` (string): The cryptocurrency wallet address to validate.
 - `options` (optional): Configuration object.
   - `chains` (WalletType[]): Array of allowed wallet types to validate against. If provided, the address must match one of the specified types.
+  - `evmChainId` (number): Optional positive safe integer containing the EIP-155 network identifier used for EVM checksum validation.
 
 **Returns:**
 
@@ -213,6 +245,7 @@ interface WalletValidationResponse {
 ```typescript
 interface ValidationOptions {
   chains?: WalletType[];
+  evmChainId?: number;
 }
 ```
 
@@ -220,7 +253,7 @@ interface ValidationOptions {
 
 | Chain    | Description                                                                        | Example Address                                                      |
 | -------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| EVM      | Ethereum, Polygon, BSC, Arbitrum, Optimism, and other EVM-compatible chains        | `0x742d35Cc6634C0532925a3b844Bc454e4438f44e`                         |
+| EVM      | EIP-55, plus EIP-1191 for Rootstock when `evmChainId` is supplied                  | `0x742d35Cc6634C0532925a3b844Bc454e4438f44e`                         |
 | Solana   | Solana blockchain addresses (strict 32-byte Base58 public keys)                    | `9A5oG2fXhxpBnh9qVHVk3dxp4Up1gkp8q5vj5rwiUJr`                        |
 | Bitcoin  | Bitcoin addresses (Legacy and SegWit)                                              | `3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy`                                 |
 | Cosmos   | Cosmos Hub and other Cosmos ecosystem chains                                       | `cosmos107ws4033624838304933629538356788950853`                      |

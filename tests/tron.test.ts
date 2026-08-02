@@ -1,3 +1,6 @@
+// tron.test.ts
+
+import { isWalletValid } from '../src';
 import { isValidTron, isValidTronHex } from '../src/validators/tron';
 import { getWalletAddressType } from '../src/core/classifier';
 import { WalletType } from '../src/types/wallet';
@@ -19,6 +22,10 @@ describe('tronAddress', () => {
     test('classification returns TRON', () => {
         expect(getWalletAddressType('TQGoz9QweUtCEvqXjsrHyYXDiDyhvTy7ev')).toBe(WalletType.TRON);
         expect(getWalletAddressType('41A614F803B6FD780986A42C78EC9C7F77E6DED13C')).toBe(WalletType.TRON);
+        expect(isWalletValid('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t', { chains: [WalletType.TRON] })).toEqual({
+            valid: true,
+            type: WalletType.TRON,
+        });
     });
 
     test('rejects invalid TRON', () => {

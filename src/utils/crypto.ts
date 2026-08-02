@@ -1,7 +1,8 @@
-import { createHash } from 'crypto';
+// crypto.ts
 
+import { sha256 } from '@noble/hashes/sha2';
+
+// Returns the double SHA 256 digest used by Base58 checksum validators.
 export function doubleSha256(data: Uint8Array): Uint8Array {
-    const h1 = createHash('sha256').update(Buffer.from(data)).digest();
-    const h2 = createHash('sha256').update(h1).digest();
-    return new Uint8Array(h2);
+    return sha256(sha256(data));
 }

@@ -14,7 +14,8 @@
         }
     },
     "files": [
-        "dist"
+        "dist",
+        "THIRD_PARTY_NOTICES.md"
     ],
     "engines": {
         "node": ">=16"
@@ -63,6 +64,7 @@
     },
     "license": "MIT",
     "devDependencies": {
+        "@noble/hashes": "1.8.0",
         "@babel/core": "7.28.5",
         "@babel/preset-env": "7.28.5",
         "@babel/preset-typescript": "7.28.5",

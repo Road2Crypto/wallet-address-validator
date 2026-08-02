@@ -1,7 +1,9 @@
+// classifier.ts
+
 import { WalletType } from "../types/wallet";
 import { testBitcoin } from "../validators/bitcoin";
 import { testCosmos } from "../validators/cosmos";
-import { testEVM } from "../validators/evm";
+import { isValidEvm } from "../validators/evm";
 import { isValidSolana } from "../validators/solana";
 import { isValidTron, isValidTronHex } from "../validators/tron";
 import { testCardano } from "../validators/cardano";
@@ -13,8 +15,8 @@ import { testAptos } from "../validators/aptos";
 import { testTon } from "../validators/ton";
 import { isValidXrp } from "../validators/xrp";
 
-// Function to get wallet address type
-export const getWalletAddressType = (address: string, chains?: WalletType[]): WalletType | null => {
+// Detects the wallet type using the allowed chains and optional EVM chain context.
+export const getWalletAddressType = (address: string, chains?: WalletType[], evmChainId?: number): WalletType | null => {
     // Helper to check if a chain is allowed
     const isChainAllowed = (chain: WalletType) => !chains || chains.includes(chain);
 
@@ -24,7 +26,7 @@ export const getWalletAddressType = (address: string, chains?: WalletType[]): Wa
     }
 
     // Validate EVM address
-    if (isChainAllowed(WalletType.EVM) && testEVM().test(address)) {
+    if (isChainAllowed(WalletType.EVM) && isValidEvm(address, evmChainId)) {
         return WalletType.EVM
     }
 
