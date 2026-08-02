@@ -1,3 +1,5 @@
+// xrp.ts
+
 import { doubleSha256 } from "../utils/crypto";
 import { base58DecodeXrp } from "../utils/encoding";
 
@@ -36,6 +38,7 @@ export function isValidXrpClassicAddress(address: string): boolean {
     return payload !== null && payload.length === 21 && payload[0] === CLASSIC_ADDRESS_VERSION;
 }
 
+// Validates XRP X address checksum, network prefix, tag flag, and reserved bytes.
 export function isValidXrpXAddress(address: string): boolean {
     const payload = decodeCheckedXrp(address);
     if (!payload || payload.length !== X_ADDRESS_PAYLOAD_LENGTH) return false;
@@ -47,10 +50,9 @@ export function isValidXrpXAddress(address: string): boolean {
     const flag = payload[22]!;
     if (flag >= 2) return false;
 
-    if (flag === 0) {
-        for (let i = 23; i < payload.length; i++) {
-            if (payload[i] !== 0) return false;
-        }
+    const reservedBytesStart = flag === 0 ? 23 : 27;
+    for (let i = reservedBytesStart; i < payload.length; i++) {
+        if (payload[i] !== 0) return false;
     }
 
     return true;
