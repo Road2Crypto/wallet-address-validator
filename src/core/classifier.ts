@@ -1,7 +1,7 @@
 // classifier.ts
 
 import { WalletType } from "../types/wallet";
-import { testBitcoin } from "../validators/bitcoin";
+import { isValidBitcoin } from "../validators/bitcoin";
 import { testCosmos } from "../validators/cosmos";
 import { isValidEvm } from "../validators/evm";
 import { isValidSolana } from "../validators/solana";
@@ -21,7 +21,7 @@ export const getWalletAddressType = (address: string, chains?: WalletType[], evm
     const isChainAllowed = (chain: WalletType) => !chains || chains.includes(chain);
 
     // Validate Bitcoin address first
-    if (isChainAllowed(WalletType.BITCOIN) && testBitcoin().test(address)) {
+    if (isChainAllowed(WalletType.BITCOIN) && isValidBitcoin(address)) {
         return WalletType.BITCOIN
     }
 
