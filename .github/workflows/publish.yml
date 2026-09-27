@@ -36,7 +36,7 @@ jobs:
 
       - name: Update package version
         run: |
-          npm version $VERSION --no-git-tag-version
+          npm version $VERSION --no-git-tag-version --allow-same-version
           echo "Updated package.json to version $VERSION"
 
       - name: Publish package or verify it exists
