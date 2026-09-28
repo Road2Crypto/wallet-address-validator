@@ -9,9 +9,9 @@ import { testTon } from '../src/validators/ton';
 describe('New Chains Validation', () => {
     describe('Litecoin', () => {
         const validAddresses = [
-            'ltc1q063s48wwx45y2y7zz6pf70x96009942d93g3k5', // Bech32
-            'LQtpS3TaYh3R8y6G169y5a9y6G169y5a9y', // Legacy (mock)
-            '3CDJnfdWX8m2NwuGUV3nhXHXEeLygMXoAj' // P2SH (BTC-like but valid format for regex)
+            'ltc1qg42tkwuuxefutzxezdkdel39gfstuap288mfea', // Bech32
+            'LM2WMpR1Rp6j3Sa59cMXMs1SPzj9eXpGc1', // Legacy
+            '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy' // P2SH with the legacy 3 prefix shared with Bitcoin
         ];
         it('should validate valid Litecoin addresses', () => {
             validAddresses.forEach(addr => {
@@ -25,8 +25,8 @@ describe('New Chains Validation', () => {
 
     describe('Dogecoin', () => {
         const validAddresses = [
-            'DS76q997iL4d4c539k7fA6k4q997iL4d4c',
-            'DQH5N4aX4S1p3Z3M8N7J9J3G2J3M8N7J9'
+            'DH5yaieqoZN36fDVciNyRueRGvGLR3mr7L',
+            'DBXu2kgc3xtvCUWFcxFE3r9hEYgmuaaCyD'
         ];
         it('should validate valid Dogecoin addresses', () => {
             validAddresses.forEach(addr => {

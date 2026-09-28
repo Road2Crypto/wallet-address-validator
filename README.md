@@ -260,8 +260,8 @@ interface ValidationOptions {
 | TRON     | TRON mainnet (Base58Check `T...` or hex `41...` with optional `0x` prefix)         | `TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`                                 |
 | Cardano  | Cardano addresses (Shelley `addr1...`, `stake1...` and Byron `Ae2...`, `DdzFF...`) | `addr1q9...`                                                         |
 | Polkadot | Polkadot Mainnet addresses (SS58 format starting with `1`)                         | `131MmXTN7xzy6wcb9di1JgChVoGjBfXMpphcGkGT6btu5YTo`                   |
-| Litecoin | Litecoin addresses (Legacy `L...`, P2SH `M...`/`3...`, Bech32 `ltc1...`)           | `ltc1q063s48wwx45y2y7zz6pf70x96009942d93g3k5`                        |
-| Dogecoin | Dogecoin addresses (Legacy `D...`, Multisig `A...`/`9...`)                         | `DS76q997iL4d4c539k7fA6k4q997iL4d4c`                                 |
+| Litecoin | Litecoin addresses (Legacy `L...`, P2SH `M...`/`3...`, Bech32 `ltc1...`)           | `ltc1qg42tkwuuxefutzxezdkdel39gfstuap288mfea`                        |
+| Dogecoin | Dogecoin addresses (Legacy `D...`, Multisig `A...`/`9...`)                         | `DH5yaieqoZN36fDVciNyRueRGvGLR3mr7L`                                 |
 | Sui      | Sui addresses (Hex `0x...`, approx 66 chars)                                       | `0x1a052c15a0c3241b1842b1096053f0b2a8d3ccdd5a747926b471e956bc1b38f8` |
 | Aptos    | Aptos addresses (Hex `0x...`, approx 66 chars)                                     | `0x83e24403164007f3544d03e92e5e1e76b1f236e7a63d91f24d9c4912e75e927c` |
 | TON      | TON addresses (Base64-like `E...`/`U...`/`k...`/`0...` 48 chars)                   | `EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8GB0aH`                   |

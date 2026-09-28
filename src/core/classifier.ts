@@ -8,8 +8,8 @@ import { isValidSolana } from "../validators/solana";
 import { isValidTron, isValidTronHex } from "../validators/tron";
 import { isValidCardano } from "../validators/cardano";
 import { testPolkadot } from "../validators/polkadot";
-import { testLitecoin } from "../validators/litecoin";
-import { testDogecoin } from "../validators/dogecoin";
+import { isValidLitecoin } from "../validators/litecoin";
+import { isValidDogecoin } from "../validators/dogecoin";
 import { testSui } from "../validators/sui";
 import { testAptos } from "../validators/aptos";
 import { testTon } from "../validators/ton";
@@ -52,11 +52,11 @@ export const getWalletAddressType = (address: string, chains?: WalletType[], evm
         return WalletType.POLKADOT
     }
 
-    if (isChainAllowed(WalletType.LITECOIN) && testLitecoin().test(address)) {
+    if (isChainAllowed(WalletType.LITECOIN) && isValidLitecoin(address)) {
         return WalletType.LITECOIN
     }
 
-    if (isChainAllowed(WalletType.DOGECOIN) && testDogecoin().test(address)) {
+    if (isChainAllowed(WalletType.DOGECOIN) && isValidDogecoin(address)) {
         return WalletType.DOGECOIN
     }
 
