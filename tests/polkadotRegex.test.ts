@@ -38,4 +38,15 @@ describe('Polkadot Wallet Validation', () => {
             }
         });
     });
+
+    it('should invalidate Polkadot addresses with a wrong checksum', () => {
+        const invalidAddresses = [
+            '131MmXTN7xzy6wcb9di1JgChVoGjBfXMpphcGkGT6btu5YTp', // Last character mistyped
+            '13YMK2efcJncYrXsaJCvHbaaDt3vfubdn75r4hdVxcggU4n3',
+        ];
+
+        invalidAddresses.forEach(address => {
+            expect(isWalletValid(address, { chains: [WalletType.POLKADOT] }).valid).toBe(false);
+        });
+    });
 });

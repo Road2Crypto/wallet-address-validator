@@ -11,6 +11,7 @@ describe('New Chains Validation', () => {
         const validAddresses = [
             'ltc1qg42tkwuuxefutzxezdkdel39gfstuap288mfea', // Bech32
             'LM2WMpR1Rp6j3Sa59cMXMs1SPzj9eXpGc1', // Legacy
+            'MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441', // P2SH
             '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy' // P2SH with the legacy 3 prefix shared with Bitcoin
         ];
         it('should validate valid Litecoin addresses', () => {
@@ -21,12 +22,31 @@ describe('New Chains Validation', () => {
                 expect(result.type).toBe(WalletType.LITECOIN);
             });
         });
+
+        it('should reject Litecoin addresses with a wrong checksum', () => {
+            const invalidAddresses = [
+                'ltc1qg42tkwuuxefutzxezdkdel39gfstuap288mfeb', // Last character mistyped
+                'LM2WMpR1Rp6j3Sa59cMXMs1SPzj9eXpGc2', // Last character mistyped
+                'L0tpS3TaYh3R8y6G169y5a9y6G169y5a9y', // Contains 0, which Base58 excludes
+                'ltc1q063s48wwx45y2y7zz6pf70x96009942d93g3k5',
+                'LQtpS3TaYh3R8y6G169y5a9y6G169y5a9y',
+            ];
+            invalidAddresses.forEach(addr => {
+                expect(testLitecoin().test(addr)).toBe(true);
+                expect(isWalletValid(addr, { chains: [WalletType.LITECOIN] }).valid).toBe(false);
+            });
+        });
+
+        it('should not accept a mistyped Bitcoin 3 address as Litecoin', () => {
+            expect(isWalletValid('3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLz').valid).toBe(false);
+        });
     });
 
     describe('Dogecoin', () => {
         const validAddresses = [
             'DH5yaieqoZN36fDVciNyRueRGvGLR3mr7L',
-            'DBXu2kgc3xtvCUWFcxFE3r9hEYgmuaaCyD'
+            'DBXu2kgc3xtvCUWFcxFE3r9hEYgmuaaCyD',
+            'A4P9hrGY87f2ZC6oRMiRYuU8EtCniT44Sk' // P2SH
         ];
         it('should validate valid Dogecoin addresses', () => {
             validAddresses.forEach(addr => {
@@ -34,6 +54,19 @@ describe('New Chains Validation', () => {
                 const result = isWalletValid(addr, { chains: [WalletType.DOGECOIN] });
                 expect(result.valid).toBe(true);
                 expect(result.type).toBe(WalletType.DOGECOIN);
+            });
+        });
+
+        it('should reject Dogecoin addresses with a wrong checksum', () => {
+            const invalidAddresses = [
+                'DH5yaieqoZN36fDVciNyRueRGvGLR3mr7M', // Last character mistyped
+                'D0S76q997iL4d4c539k7fA6k4q997iL4d', // Contains 0, which Base58 excludes
+                'DS76q997iL4d4c539k7fA6k4q997iL4d4c',
+                'DQH5N4aX4S1p3Z3M8N7J9J3G2J3M8N7J9',
+            ];
+            invalidAddresses.forEach(addr => {
+                expect(testDogecoin().test(addr)).toBe(true);
+                expect(isWalletValid(addr, { chains: [WalletType.DOGECOIN] }).valid).toBe(false);
             });
         });
     });
@@ -65,11 +98,21 @@ describe('New Chains Validation', () => {
                 expect(result.type).toBe(WalletType.APTOS);
             });
         });
+
+        it('should report the format shared with Sui as Sui when both chains are allowed', () => {
+            validAddresses.forEach(addr => {
+                expect(isWalletValid(addr)).toEqual({ valid: true, type: WalletType.SUI });
+            });
+        });
     });
 
     describe('TON', () => {
         const validAddresses = [
-            'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N'
+            'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N', // Bounceable
+            'UQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqEBI', // Non bounceable
+            'kQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqKYH', // Testnet bounceable
+            '0QCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqPvC', // Testnet non bounceable
+            'Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF' // Masterchain
         ];
         it('should validate valid TON addresses', () => {
             validAddresses.forEach(addr => {
@@ -77,6 +120,19 @@ describe('New Chains Validation', () => {
                 const result = isWalletValid(addr, { chains: [WalletType.TON] });
                 expect(result.valid).toBe(true);
                 expect(result.type).toBe(WalletType.TON);
+            });
+        });
+
+        it('should reject TON addresses with a wrong checksum or tag', () => {
+            const invalidAddresses = [
+                'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2M', // Last character mistyped
+                'UQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N', // Tag changed without its checksum
+                'KQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqEmq', // Unknown tag with a matching checksum
+                'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8GB0aH',
+            ];
+            invalidAddresses.forEach(addr => {
+                expect(testTon().test(addr)).toBe(true);
+                expect(isWalletValid(addr, { chains: [WalletType.TON] }).valid).toBe(false);
             });
         });
     });

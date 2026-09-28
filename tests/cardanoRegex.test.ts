@@ -8,6 +8,11 @@ describe('cardanoAddressRegex', () => {
             'addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3n0d3vllmyqwsx5wktcd8cc3sq835lu7drv2xwl2wywfgse35a3x',
             'addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3n0d3vllmyqwsx5wktcd8cc3sq835lu7drv2xwl2wywfgs68faae',
             'stake1uyehkck0lajq8gr28t9uxnuvgcqrc6070x3k9r8048z8y5gh6ffgw',
+            'addr1z8phkx6acpnf78fuvxn0mkew3l0fd058hzquvz7w36x4gten0d3vllmyqwsx5wktcd8cc3sq835lu7drv2xwl2wywfgs9yc0hh', // Script base
+            'addr1gx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer5pnz75xxcrzqf96k', // Pointer
+            'addr1vx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzers66hrl8', // Enterprise
+            'stake178phkx6acpnf78fuvxn0mkew3l0fd058hzquvz7w36x4gtcccycj5', // Script stake
+            'stake_test1uqehkck0lajq8gr28t9uxnuvgcqrc6070x3k9r8048z8y5gssrtvn',
         ];
         addrs.forEach(a => {
             expect(testCardano().test(a)).toBe(true);
@@ -58,6 +63,20 @@ describe('cardanoAddressRegex', () => {
         invalid.forEach(a => {
             expect(testCardano().test(a)).toBe(false);
             expect(getWalletAddressType(a)).not.toBe(WalletType.CARDANO);
+        });
+    });
+
+    test('invalidShelleyChecksums', () => {
+        const invalid = [
+            'addr1vx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzers66hrl9', // Last character mistyped
+            'addr1vx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzers0x8069', // Bech32m checksum
+            'addr1qqqqqqqqqqqqqqqqcmx5sq', // Valid checksum on a payload shorter than 29 bytes
+            'addr1q9d340dl346w6r51121d123fd134234sfa',
+            'addr1a',
+        ];
+        invalid.forEach(a => {
+            expect(testCardano().test(a)).toBe(true);
+            expect(getWalletAddressType(a, [WalletType.CARDANO])).toBeNull();
         });
     });
 });
