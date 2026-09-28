@@ -1,6 +1,8 @@
 import { doubleSha256 } from "../utils/crypto";
 import { base58Decode } from "../utils/encoding";
 
+const BASE58_ADDRESS = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
+
 /**
  * TRON Base58Check validator:
  * - Base58 decode must be 25 bytes
@@ -8,7 +10,7 @@ import { base58Decode } from "../utils/encoding";
  * - Last 4 bytes equal the first 4 bytes of doubleSHA256(version+payload)
  */
 export function isValidTron(address: string): boolean {
-    // Quick prefilter: TRON Base58 is usually 34 chars and starts with T, but rely on full check below.
+    if (!BASE58_ADDRESS.test(address)) return false;
     const decoded = base58Decode(address);
     if (!decoded || decoded.length !== 25) return false;
 

@@ -5,6 +5,7 @@ import { base58DecodeXrp } from "../utils/encoding";
 
 const CLASSIC_ADDRESS_VERSION = 0x00;
 const X_ADDRESS_PAYLOAD_LENGTH = 31;
+const X_ADDRESS_LENGTH = 47;
 const X_ADDRESS_MAINNET_PREFIX = Uint8Array.from([0x05, 0x44]);
 const X_ADDRESS_TESTNET_PREFIX = Uint8Array.from([0x04, 0x93]);
 
@@ -19,6 +20,8 @@ function hasPrefix(value: Uint8Array, prefix: Uint8Array): boolean {
 }
 
 function decodeCheckedXrp(value: string): Uint8Array | null {
+    if (value.length > X_ADDRESS_LENGTH) return null;
+
     const decoded = base58DecodeXrp(value);
     if (!decoded || decoded.length < 5) return null;
 

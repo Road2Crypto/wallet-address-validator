@@ -9,6 +9,7 @@ export const testSolana = (): RegExp => /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
  * - Decoded length must be exactly 32 bytes (ed25519 public key)
  */
 export function isValidSolana(address: string): boolean {
+    if (!testSolana().test(address)) return false;
     const decoded = base58Decode(address);
     return decoded !== null && decoded.length === 32;
 }
