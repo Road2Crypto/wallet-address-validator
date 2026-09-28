@@ -7,6 +7,15 @@ on:
         description: Release title
         required: true
         type: string
+      bump:
+        description: Version bump
+        required: true
+        type: choice
+        default: minor
+        options:
+          - patch
+          - minor
+          - major
 
 concurrency:
   group: release
@@ -26,9 +35,11 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/use-node
 
-      - name: Bump minor version
+      - name: Bump version
+        env:
+          BUMP: ${{ inputs.bump }}
         run: |
-          npm version minor --no-git-tag-version
+          npm version "$BUMP" --no-git-tag-version
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "Preparing version $VERSION"
