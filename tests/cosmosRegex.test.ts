@@ -47,4 +47,10 @@ describe('Cosmos Wallet Validation', () => {
             expect(isWalletValid(address, { chains: [WalletType.COSMOS] }).valid).toBe(false);
         })
     })
+
+    test('uppercaseAddresses', () => {
+        expect(isWalletValid('COSMOS1HSK6JRYYQJFHP5DHC55TC9JTCKYGX0EPH6DD02')).toEqual({ valid: true, type: WalletType.COSMOS })
+        expect(isWalletValid('COSMOS1HSK6JRYYQJFHP5DHC55TC9JTCKYGX0EPH6DD03', { chains: [WalletType.COSMOS] }).valid).toBe(false) // Last character mistyped
+        expect(isWalletValid('COSMOS1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02', { chains: [WalletType.COSMOS] }).valid).toBe(false) // Mixed case
+    })
 })

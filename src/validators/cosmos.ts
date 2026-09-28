@@ -18,7 +18,7 @@ export const testCosmos = () => {
 
 // Validates a Cosmos Hub account address prefix, bech32 checksum, and 20 byte payload.
 export function isValidCosmos(address: string): boolean {
-    if (!testCosmos().test(address)) return false;
+    if (!testCosmos().test(address.toLowerCase())) return false;
 
     const decoded = decodeBech32(address);
     if (!decoded || decoded.encoding !== Bech32Encoding.BECH32 || decoded.hrp !== "cosmos") return false;
