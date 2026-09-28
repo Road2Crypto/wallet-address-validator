@@ -267,6 +267,8 @@ interface ValidationOptions {
 | TON      | TON addresses (Base64-like `E...`/`U...`/`k...`/`0...` 48 chars)                   | `EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8GB0aH`                   |
 | XRP      | XRP classic addresses (`r...`, 25-35 chars) and X-addresses (`X...`/`T...`, 47 chars) | `rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh`                                 |
 
+Sui and Aptos addresses share the same `0x` plus 64 hex character format, so the format alone cannot tell them apart. When both chains are allowed, a matching address is reported as `WalletType.SUI`. Pass `chains: [WalletType.APTOS]` to validate an address as Aptos.
+
 ## Contributing
 
 All contributions are welcome! Please feel free to open a Pull Request.
