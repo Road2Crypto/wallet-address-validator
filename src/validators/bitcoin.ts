@@ -1,6 +1,5 @@
 import { isValidSegwitAddress } from "../utils/bech32";
-import { doubleSha256 } from "../utils/crypto";
-import { base58Decode } from "../utils/encoding";
+import { base58CheckDecode } from "../utils/encoding";
 
 // Regex for Bitcoin addresses
 export const testBitcoin = (): RegExp => {
@@ -15,13 +14,6 @@ export function isValidBitcoin(address: string): boolean {
     if (!testBitcoin().test(address)) return false;
     if (/^bc1/i.test(address)) return isValidSegwitAddress(address, "bc");
 
-    const decoded = base58Decode(address);
-    if (!decoded || decoded.length !== 25) return false;
-    if (decoded[0] !== 0x00 && decoded[0] !== 0x05) return false;
-
-    const hash = doubleSha256(decoded.slice(0, 21));
-    for (let i = 0; i < 4; i++) {
-        if (decoded[21 + i] !== hash[i]) return false;
-    }
-    return true;
+    const body = base58CheckDecode(address);
+    return body !== null && body.length === 21 && (body[0] === 0x00 || body[0] === 0x05);
 }

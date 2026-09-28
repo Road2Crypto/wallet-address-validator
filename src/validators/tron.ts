@@ -1,5 +1,4 @@
-import { doubleSha256 } from "../utils/crypto";
-import { base58Decode } from "../utils/encoding";
+import { base58CheckDecode } from "../utils/encoding";
 
 const BASE58_ADDRESS = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
 
@@ -11,18 +10,8 @@ const BASE58_ADDRESS = /^T[1-9A-HJ-NP-Za-km-z]{33}$/;
  */
 export function isValidTron(address: string): boolean {
     if (!BASE58_ADDRESS.test(address)) return false;
-    const decoded = base58Decode(address);
-    if (!decoded || decoded.length !== 25) return false;
-
-    const body = decoded.slice(0, 21); // version(1) + payload(20)
-    const checksum = decoded.slice(21); // 4 bytes
-    if (body[0] !== 0x41) return false;
-
-    const hash = doubleSha256(body);
-    for (let i = 0; i < 4; i++) {
-        if (checksum[i] !== hash[i]) return false;
-    }
-    return true;
+    const body = base58CheckDecode(address);
+    return body !== null && body.length === 21 && body[0] === 0x41;
 }
 
 /**

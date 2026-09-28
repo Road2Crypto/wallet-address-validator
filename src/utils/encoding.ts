@@ -1,4 +1,6 @@
 // Base58 utilities (Bitcoin alphabet)
+import { doubleSha256 } from './crypto';
+
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const XRP_BASE58_ALPHABET = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
 
@@ -63,4 +65,17 @@ export function base58Decode(input: string): Uint8Array | null {
 
 export function base58DecodeXrp(input: string): Uint8Array | null {
     return decodeBase58(input, XRP_BASE58_ALPHABET, XRP_BASE58_INDEX);
+}
+
+// Decodes Base58Check input and returns the version and payload bytes when the double SHA 256 checksum matches.
+export function base58CheckDecode(input: string): Uint8Array | null {
+    const decoded = base58Decode(input);
+    if (!decoded || decoded.length < 5) return null;
+
+    const body = decoded.slice(0, -4);
+    const hash = doubleSha256(body);
+    for (let i = 0; i < 4; i++) {
+        if (decoded[body.length + i] !== hash[i]) return null;
+    }
+    return body;
 }
