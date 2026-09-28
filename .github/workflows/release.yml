@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release-pull-request:
+    if: github.triggering_actor == 'afern247' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: ./.github/actions/use-node
+
+      - name: Bump minor version
+        run: |
+          npm version minor --no-git-tag-version
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "Preparing version $VERSION"
+
+      - name: Open release pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "release/$VERSION"
+          git add package.json package-lock.json
+          git commit -m "Release $VERSION"
+          git push origin "release/$VERSION"
+          gh pr create --base main --head "release/$VERSION" --title "Release $VERSION" --body "Merging this publishes $VERSION to npm and creates the GitHub release."

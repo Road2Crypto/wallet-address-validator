@@ -1,14 +1,21 @@
-name: Publish Package
+name: Publish
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
 
     steps:
@@ -19,47 +26,42 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/use-node
 
-      - name: Get version from release
+      - name: Read version
         run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Publishing version $VERSION"
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view "$NAME@$VERSION" version 2> /dev/null || true)
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          if [ "$PUBLISHED_VERSION" = "$VERSION" ]; then
+            echo "PUBLISHED=true" >> "$GITHUB_ENV"
+            echo "$NAME@$VERSION is already on npm"
+          else
+            echo "PUBLISHED=false" >> "$GITHUB_ENV"
+            echo "Publishing $NAME@$VERSION"
+          fi
 
       - name: Install dependencies
+        if: env.PUBLISHED == 'false'
         run: npm ci
 
       - name: Run tests
+        if: env.PUBLISHED == 'false'
         run: npm test
 
       - name: Build package
+        if: env.PUBLISHED == 'false'
         run: npm run build
 
-      - name: Update package version
+      - name: Publish package
+        if: env.PUBLISHED == 'false'
+        run: npm publish --access public --provenance
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          npm version $VERSION --no-git-tag-version --allow-same-version
-          echo "Updated package.json to version $VERSION"
-
-      - name: Publish package or verify it exists
-        run: |
-          # Try to publish and capture output + exit code
-          # We use a temporary file because capturing output in variable swallows exit code with `set -e` or requires complex piping
-          set +e
-          OUTPUT=$(npm publish --access public --provenance 2>&1)
-          EXIT_CODE=$?
-          set -e
-
-          if [ $EXIT_CODE -eq 0 ]; then
-            echo "Package successfully published!"
-            echo "$OUTPUT"
-            exit 0
-          fi
-
-          # If failed, check if it's because version already exists
-          if echo "$OUTPUT" | grep -q "previously published versions"; then
-            echo "Package version $VERSION already exists on npm registry. This is OK."
-            exit 0
+          if gh release view "$VERSION" > /dev/null 2>&1; then
+            echo "Release $VERSION already exists"
           else
-            echo "An unexpected error occurred during publishing:"
-            echo "$OUTPUT"
-            exit 1
+            gh release create "$VERSION" --target "$GITHUB_SHA" --title "$VERSION" --generate-notes
           fi
