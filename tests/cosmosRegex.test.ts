@@ -7,7 +7,8 @@ describe('Cosmos Wallet Validation', () => {
         const validAddresses = [
             'cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02',
             'cosmos17xpfvakm2amg962yls6f84z3kell8c5lserqta',
-            'cosmos1jv65s3grqf6v6jl3dp4t6c9t9rk99cd88lyufl'
+            'cosmos1jv65s3grqf6v6jl3dp4t6c9t9rk99cd88lyufl',
+            'cosmos1pwl97zvcl92hz6cw0dg5qkzvr2alk332ssd255z5dy9el04r9lts29yere' // 32 byte account
         ]
         validAddresses.forEach(address => {
             expect(testCosmos().test(address)).toBe(true);
@@ -41,6 +42,7 @@ describe('Cosmos Wallet Validation', () => {
             'cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd03', // Last character mistyped
             'cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0epzxap2g', // Bech32m checksum
             'cosmos107ws4033624838304933629538356788950853',
+            'cosmos1pwl97zvcl92hz6cw0dg5qkzvr2alk332ssd255z5dy9el04r9lts29yerf', // Last character mistyped
         ]
         invalidAddresses.forEach(address => {
             expect(testCosmos().test(address)).toBe(true);

@@ -1,22 +1,22 @@
 import { Bech32Encoding, bech32WordsToBytes, decodeBech32 } from "../utils/bech32";
 
-const ACCOUNT_ADDRESS_LENGTH = 20;
+const ACCOUNT_ADDRESS_LENGTHS = [20, 32];
 
 export const testCosmos = () => {
     // regex for cosmos addresses
     // starts with cosmos1
-    // followed by 38-39 alphanumeric characters (bech32 data part)
-    // total length 45-46
+    // followed by 38 or 58 bech32 characters for 20 or 32 byte addresses (bech32 data part)
+    // total length 45 or 65
     // Using simple char class [a-z0-9] as per existing pattern compatibility, 
     // or arguably should be [a-z0-9] excluding b, i, o for stricter bech32 if we want, but keeping it simple for now consistent with others.
     // The previous file had specific allowed chars string. I will preserve that if possible or use range.
     // Previous: 'qpzry9x8gf2tvdw0s3jn54khce6mua7l'
     // Let's use the explicit char set for better precision since it was already there.
     const ALLOWED_CHARS = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
-    return new RegExp('^(cosmos)1([' + ALLOWED_CHARS + ']{38,39})$');
+    return new RegExp('^(cosmos)1([' + ALLOWED_CHARS + ']{38}|[' + ALLOWED_CHARS + ']{58})$');
 };
 
-// Validates a Cosmos Hub account address prefix, bech32 checksum, and 20 byte payload.
+// Validates a Cosmos Hub account address prefix, bech32 checksum, and 20 or 32 byte payload.
 export function isValidCosmos(address: string): boolean {
     if (!testCosmos().test(address.toLowerCase())) return false;
 
@@ -24,5 +24,5 @@ export function isValidCosmos(address: string): boolean {
     if (!decoded || decoded.encoding !== Bech32Encoding.BECH32 || decoded.hrp !== "cosmos") return false;
 
     const payload = bech32WordsToBytes(decoded.words);
-    return payload !== null && payload.length === ACCOUNT_ADDRESS_LENGTH;
+    return payload !== null && ACCOUNT_ADDRESS_LENGTHS.includes(payload.length);
 }
