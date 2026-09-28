@@ -112,7 +112,9 @@ describe('New Chains Validation', () => {
             'UQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqEBI', // Non bounceable
             'kQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqKYH', // Testnet bounceable
             '0QCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqPvC', // Testnet non bounceable
-            'Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF' // Masterchain
+            'Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF', // Masterchain
+            'EQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPrHF', // URL safe base64
+            'EQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff+W72r5gqPrHF' // Standard base64
         ];
         it('should validate valid TON addresses', () => {
             validAddresses.forEach(addr => {
@@ -120,6 +122,34 @@ describe('New Chains Validation', () => {
                 const result = isWalletValid(addr, { chains: [WalletType.TON] });
                 expect(result.valid).toBe(true);
                 expect(result.type).toBe(WalletType.TON);
+            });
+        });
+
+        it('should validate raw TON addresses', () => {
+            const rawAddresses = [
+                '0:ca6e321c7cce9ecedf0a8ca2492ec8592494aa5fb5ce0387dff96ef6af982a3e', // Basechain
+                '0:CA6E321C7CCE9ECEDF0A8CA2492EC8592494AA5FB5CE0387DFF96EF6AF982A3E', // Uppercase hex
+                '-1:3333333333333333333333333333333333333333333333333333333333333333', // Masterchain
+            ];
+            rawAddresses.forEach(addr => {
+                expect(isWalletValid(addr)).toEqual({ valid: true, type: WalletType.TON });
+            });
+        });
+
+        it('should reject malformed raw TON addresses', () => {
+            const hash = 'ca6e321c7cce9ecedf0a8ca2492ec8592494aa5fb5ce0387dff96ef6af982a3e';
+            const invalidAddresses = [
+                `0:${hash.slice(1)}`, // 63 hex characters
+                `0:${hash}0`, // 65 hex characters
+                `0:${hash.slice(1)}g`, // Not hex
+                `128:${hash}`, // Workchain above a signed byte
+                `-129:${hash}`, // Workchain below a signed byte
+                `00:${hash}`, // Leading zero
+                `-0:${hash}`, // Negative zero
+                `:${hash}`, // Missing workchain
+            ];
+            invalidAddresses.forEach(addr => {
+                expect(isWalletValid(addr, { chains: [WalletType.TON] }).valid).toBe(false);
             });
         });
 

@@ -1,12 +1,13 @@
 const BOUNCEABLE_TAG = 0x11;
 const NON_BOUNCEABLE_TAG = 0x51;
 const TEST_ONLY_FLAG = 0x80;
+const RAW_ADDRESS = /^(0|-?[1-9][0-9]{0,2}):[0-9a-fA-F]{64}$/;
 
 // TON address regex
-// User-friendly addresses are base64-url like, 48 chars long.
+// User friendly addresses are standard or URL safe base64, 48 chars long.
 // Start with E, U, k, K, 0 (or others depending on flags, but mainly these).
-// Allowed chars: A-Z, a-z, 0-9, _, -
-export const testTon = (): RegExp => /^(E|U|k|K|0)[A-Za-z0-9_-]{47}$/;
+// Allowed chars: letters, digits, plus, slash, underscore, and dash
+export const testTon = (): RegExp => /^(E|U|k|K|0)[A-Za-z0-9+/_-]{47}$/;
 
 function crc16(data: Uint8Array): number {
     let crc = 0;
@@ -19,8 +20,11 @@ function crc16(data: Uint8Array): number {
     return crc;
 }
 
-// Validates a TON user friendly address tag and CRC16 checksum.
+// Validates a TON raw address with a signed 8 bit workchain, or a user friendly address tag and CRC16 checksum.
 export function isValidTon(address: string): boolean {
+    const raw = RAW_ADDRESS.exec(address);
+    if (raw) return Number(raw[1]) >= -128 && Number(raw[1]) <= 127;
+
     if (!testTon().test(address)) return false;
 
     const binary = atob(address.replace(/-/g, "+").replace(/_/g, "/"));
