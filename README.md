@@ -28,7 +28,7 @@ Maintained by [Road2Crypto.com](https://road2crypto.com).
 ## Features
 
 - 🚀 **Multi-Chain Support**: Validate addresses for EVM (Ethereum, Polygon, BSC), Solana, Bitcoin, Polkadot, Cosmos, TRON, and Cardano.
-- 🔐 **Audited Hashing**: Bundles only the audited Keccak and SHA 256 code needed for checksum validation, with zero runtime dependencies.
+- 🔐 **Audited Hashing**: Bundles only the audited Keccak, SHA 256, and BLAKE2b code needed for checksum validation, with zero runtime dependencies.
 - 🌳 **Tree-Shakable**: Optimized for modern bundlers (Webpack, Rollup, Vite) with `sideEffects: false`.
 - ⚡ **High Performance**: Regex-based and algorithmic validation for maximum speed.
 - 🎯 **Selective Validation**: Configure the validator to only accept specific chains relevant to your application.

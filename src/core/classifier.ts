@@ -7,7 +7,7 @@ import { isValidEvm } from "../validators/evm";
 import { isValidSolana } from "../validators/solana";
 import { isValidTron, isValidTronHex } from "../validators/tron";
 import { isValidCardano } from "../validators/cardano";
-import { testPolkadot } from "../validators/polkadot";
+import { isValidPolkadot } from "../validators/polkadot";
 import { isValidLitecoin } from "../validators/litecoin";
 import { isValidDogecoin } from "../validators/dogecoin";
 import { testSui } from "../validators/sui";
@@ -48,7 +48,7 @@ export const getWalletAddressType = (address: string, chains?: WalletType[], evm
         return WalletType.CARDANO
     }
 
-    if (isChainAllowed(WalletType.POLKADOT) && testPolkadot().test(address)) {
+    if (isChainAllowed(WalletType.POLKADOT) && isValidPolkadot(address)) {
         return WalletType.POLKADOT
     }
 
