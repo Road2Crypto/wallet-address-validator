@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      title:
+        description: Release title
+        required: true
+        type: string
 
 concurrency:
   group: release
@@ -31,6 +36,7 @@ jobs:
       - name: Open release pull request
         env:
           GH_TOKEN: ${{ github.token }}
+          TITLE: ${{ inputs.title }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -38,4 +44,4 @@ jobs:
           git add package.json package-lock.json
           git commit -m "Release $VERSION"
           git push origin "release/$VERSION"
-          gh pr create --base main --head "release/$VERSION" --title "Release $VERSION" --body "Merging this publishes $VERSION to npm and creates the GitHub release."
+          gh pr create --base main --head "release/$VERSION" --title "$TITLE" --body "Merging this publishes $VERSION to npm and creates the GitHub release titled with this pull request's title."

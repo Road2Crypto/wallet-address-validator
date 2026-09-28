@@ -17,6 +17,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      pull-requests: read
 
     steps:
       - uses: actions/checkout@v6
@@ -27,6 +28,8 @@ jobs:
         uses: ./.github/actions/use-node
 
       - name: Read version
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           NAME=$(node -p "require('./package.json').name")
           VERSION=$(node -p "require('./package.json').version")
@@ -39,6 +42,29 @@ jobs:
             echo "PUBLISHED=false" >> "$GITHUB_ENV"
             echo "Publishing $NAME@$VERSION"
           fi
+          if gh release view "$VERSION" > /dev/null 2>&1; then
+            echo "RELEASED=true" >> "$GITHUB_ENV"
+            echo "Release $VERSION already exists"
+          else
+            echo "RELEASED=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Read release title
+        if: env.RELEASED == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          export BRANCH="release/$VERSION"
+          TITLE=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[] | select(.head.ref == $ENV.BRANCH) | .title')
+          if [ -z "$TITLE" ]; then
+            echo "::error::No merged release/$VERSION pull request found for this commit. Release through the Release workflow."
+            exit 1
+          fi
+          {
+            echo "TITLE<<RELEASE_TITLE_EOF"
+            echo "$TITLE"
+            echo "RELEASE_TITLE_EOF"
+          } >> "$GITHUB_ENV"
 
       - name: Install dependencies
         if: env.PUBLISHED == 'false'
@@ -57,11 +83,7 @@ jobs:
         run: npm publish --access public --provenance
 
       - name: Create GitHub release
+        if: env.RELEASED == 'false'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          if gh release view "$VERSION" > /dev/null 2>&1; then
-            echo "Release $VERSION already exists"
-          else
-            gh release create "$VERSION" --target "$GITHUB_SHA" --title "$VERSION" --generate-notes
-          fi
+        run: gh release create "$VERSION" --target "$GITHUB_SHA" --title "$TITLE" --generate-notes
