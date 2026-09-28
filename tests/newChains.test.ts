@@ -69,7 +69,7 @@ describe('New Chains Validation', () => {
 
     describe('TON', () => {
         const validAddresses = [
-            'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8GB0aH'
+            'EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N'
         ];
         it('should validate valid TON addresses', () => {
             validAddresses.forEach(addr => {

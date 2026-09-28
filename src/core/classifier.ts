@@ -12,7 +12,7 @@ import { isValidLitecoin } from "../validators/litecoin";
 import { isValidDogecoin } from "../validators/dogecoin";
 import { testSui } from "../validators/sui";
 import { testAptos } from "../validators/aptos";
-import { testTon } from "../validators/ton";
+import { isValidTon } from "../validators/ton";
 import { isValidXrp } from "../validators/xrp";
 
 // Detects the wallet type using the allowed chains and optional EVM chain context.
@@ -68,7 +68,7 @@ export const getWalletAddressType = (address: string, chains?: WalletType[], evm
         return WalletType.APTOS
     }
 
-    if (isChainAllowed(WalletType.TON) && testTon().test(address)) {
+    if (isChainAllowed(WalletType.TON) && isValidTon(address)) {
         return WalletType.TON
     }
 
