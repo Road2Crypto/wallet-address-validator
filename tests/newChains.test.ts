@@ -10,7 +10,9 @@ describe('New Chains Validation', () => {
     describe('Litecoin', () => {
         const validAddresses = [
             'ltc1qg42tkwuuxefutzxezdkdel39gfstuap288mfea', // Bech32
+            'LTC1QG42TKWUUXEFUTZXEZDKDEL39GFSTUAP288MFEA', // Bech32 fully uppercase
             'LM2WMpR1Rp6j3Sa59cMXMs1SPzj9eXpGc1', // Legacy
+            'LTC1X5HWSAYmpEQJzDYxowuFBvAozZM9Mn', // Legacy that starts like a Bech32 address
             'MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441', // P2SH
             '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy' // P2SH with the legacy 3 prefix shared with Bitcoin
         ];
@@ -26,6 +28,7 @@ describe('New Chains Validation', () => {
         it('should reject Litecoin addresses with a wrong checksum', () => {
             const invalidAddresses = [
                 'ltc1qg42tkwuuxefutzxezdkdel39gfstuap288mfeb', // Last character mistyped
+                'LTC1QG42TKWUUXEFUTZXEZDKDEL39GFSTUAP288MFEB', // Last character mistyped
                 'LM2WMpR1Rp6j3Sa59cMXMs1SPzj9eXpGc2', // Last character mistyped
                 'L0tpS3TaYh3R8y6G169y5a9y6G169y5a9y', // Contains 0, which Base58 excludes
                 'ltc1q063s48wwx45y2y7zz6pf70x96009942d93g3k5',
@@ -35,6 +38,11 @@ describe('New Chains Validation', () => {
                 expect(testLitecoin().test(addr)).toBe(true);
                 expect(isWalletValid(addr, { chains: [WalletType.LITECOIN] }).valid).toBe(false);
             });
+        });
+
+        it('should report fully uppercase Litecoin addresses as Litecoin rather than Solana', () => {
+            expect(isWalletValid('LTC1QG42TKWUUXEFUTZXEZDKDEL39GFSTUAP288MFEA')).toEqual({ valid: true, type: WalletType.LITECOIN });
+            expect(isWalletValid('LTC1qg42tkwuuxefutzxezdkdel39gfstuap288mfea', { chains: [WalletType.LITECOIN] }).valid).toBe(false);
         });
 
         it('should not accept a mistyped Bitcoin 3 address as Litecoin', () => {

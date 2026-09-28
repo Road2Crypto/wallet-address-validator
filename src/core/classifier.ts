@@ -35,6 +35,10 @@ export const getWalletAddressType = (address: string, chains?: WalletType[], evm
         return WalletType.TRON
     }
 
+    if (isChainAllowed(WalletType.LITECOIN) && isValidLitecoin(address)) {
+        return WalletType.LITECOIN
+    }
+
     // Validate Solana address (strict: 32-byte Base58 public key)
     if (isChainAllowed(WalletType.SOLANA) && isValidSolana(address)) {
         return WalletType.SOLANA
@@ -50,10 +54,6 @@ export const getWalletAddressType = (address: string, chains?: WalletType[], evm
 
     if (isChainAllowed(WalletType.POLKADOT) && isValidPolkadot(address)) {
         return WalletType.POLKADOT
-    }
-
-    if (isChainAllowed(WalletType.LITECOIN) && isValidLitecoin(address)) {
-        return WalletType.LITECOIN
     }
 
     if (isChainAllowed(WalletType.DOGECOIN) && isValidDogecoin(address)) {
