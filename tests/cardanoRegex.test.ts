@@ -22,31 +22,10 @@ describe('cardanoAddressRegex', () => {
 
     test('validByronAddresses', () => {
         const addrs = [
-            'Ae2tdPwUUEZui4yx123fd134234sfa', // contains '0'? No '0'.
-            // Wait, previous string: 'Ae2tdPwUUEZui4yx123fd134234sfa' -> has '1', '2', '3', '4', 's', 'f', 'a'. No '0'.
-            // Let's check regex again.
-            // [1-9] -> 1-9 allowed.
-            // A-H -> allowed.
-            // J-N -> allowed.
-            // P-Z -> allowed.
-            // a-k -> allowed.
-            // m-z -> allowed.
-
-            // Checking: Ae2tdPwUUEZui4yx123fd134234sfa
-            // A, e, 2, t, d, P, w, U, U, E, Z, u, i, 4, y, x, 1, 2, 3, f, d, 1, 3, 4, 2, 3, 4, s, f, a
-            // All look valid?
-
-            // Second string: 'DdzFFdpSdPsQ9d340d346w6r51121d123fd134234sfa'
-            // '0' IS PRESENT! ...340d...
-
-            // First string: ...123fd134234... No 0.
-
-            // Let's just user known valid addresses from the Internet to be safe.
-            // Byron addresses:
-            // Ae2tdPwUPEZLxjkmpiF29d5c8r2q8r5913e2 (made up, but valid chars)
-
-            'Ae2tdPwUPEZLxjkmpiF29d5c8r2q8r5913e2',
-            'DdzFFdpSdPsQ9d34346w6r51121d123fd134234sfa', // Removed '0'
+            'Ae2tdPwUPEZFRbyhz3cpfC2CumGzNkFBN2L42rcUc2yjQpEkxDbkPodpMAi', // Icarus
+            'Ae2tdPwUPEYwQuL8cXMVstbEUvfdxwWpjepjKTD9BYQbcXJG8BdLjEpuD8Y', // Redemption
+            'DdzFFzCqrhsfi5fFjJUHYPSnfTYrnMohzh3PrrtrVQgwua33HWPKUdTJXo3o77pSGCmDNrjYaAiZmJddaPW9iHyUDatvU2WhX7MgnNMy', // Daedalus
+            'DdzFFzCqrht7PVrPU8FAnks5Ys6BxLxKjy7sFdNnkDFLoMaK8FoEiun6eMBowpnkS8h69w3VxTrJ6pTiwYSgF1mC22ifAqQhAPY4ty4j', // Daedalus
         ];
         addrs.forEach(a => {
             expect(testCardano().test(a)).toBe(true);
@@ -63,6 +42,22 @@ describe('cardanoAddressRegex', () => {
         invalid.forEach(a => {
             expect(testCardano().test(a)).toBe(false);
             expect(getWalletAddressType(a)).not.toBe(WalletType.CARDANO);
+        });
+    });
+
+    test('invalidByronChecksums', () => {
+        const invalid = [
+            'Ae2tdPwUPEZFRbyhz3cpfC2CumGzNkFBN2L42rcUc2yjQpEkxDbkPodpMAj', // Last character mistyped
+            'DdzFFzCqrhsfi5fFjJUHYPSnfTYrnMohzh3PrrtrVQgwua33HWPKUdTJXo3o77pSGCmDNrjYaAiZmJddaPW9iHyUDatvU2WhX7MgnNMz', // Last character mistyped
+            'DdzFFzCqrhsfi5fFjJUHYPSnfTYrnMohzh3PrrtrVQgwua33HWPKUdTJXo3o77pSGCmDNrjYaAiZmJddaPW9iHyUDatvU2WhX7MgnNMyz', // Longer than any Byron address
+            'Ae2tdPwUUEZui4yx123fd134234sfa',
+            'Ae2tdPwUPEZLxjkmpiF29d5c8r2q8r5913e2',
+            'DdzFFdpSdPsQ9d34346w6r51121d123fd134234sfa',
+            'Ae2' + 'z'.repeat(20000),
+        ];
+        invalid.forEach(a => {
+            expect(testCardano().test(a)).toBe(true);
+            expect(getWalletAddressType(a, [WalletType.CARDANO])).toBeNull();
         });
     });
 
