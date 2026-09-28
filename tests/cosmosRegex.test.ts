@@ -5,8 +5,8 @@ import { WalletType } from '../src/types/wallet';
 describe('Cosmos Wallet Validation', () => {
     test('validAddresses', () => {
         const validAddresses = [
-            'cosmos107ws4033624838304933629538356788950853', // 45 chars
-            'cosmos1cyyzpx86952796989932470732439589369680a'  // 46 chars
+            'cosmos1hsk6jryyqjfhp5dhc55tc9jtckygx0eph6dd02',
+            'cosmos17xpfvakm2amg962yls6f84z3kell8c5lserqta'
         ]
         validAddresses.forEach(address => {
             expect(testCosmos().test(address)).toBe(true);

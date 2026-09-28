@@ -2,7 +2,7 @@
 
 import { WalletType } from "../types/wallet";
 import { isValidBitcoin } from "../validators/bitcoin";
-import { testCosmos } from "../validators/cosmos";
+import { isValidCosmos } from "../validators/cosmos";
 import { isValidEvm } from "../validators/evm";
 import { isValidSolana } from "../validators/solana";
 import { isValidTron, isValidTronHex } from "../validators/tron";
@@ -40,7 +40,7 @@ export const getWalletAddressType = (address: string, chains?: WalletType[], evm
         return WalletType.SOLANA
     }
 
-    if (isChainAllowed(WalletType.COSMOS) && testCosmos().test(address)) {
+    if (isChainAllowed(WalletType.COSMOS) && isValidCosmos(address)) {
         return WalletType.COSMOS
     }
 

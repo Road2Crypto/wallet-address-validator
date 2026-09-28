@@ -1,3 +1,7 @@
+import { Bech32Encoding, bech32WordsToBytes, decodeBech32 } from "../utils/bech32";
+
+const ACCOUNT_ADDRESS_LENGTH = 20;
+
 export const testCosmos = () => {
     // regex for cosmos addresses
     // starts with cosmos1
@@ -11,3 +15,14 @@ export const testCosmos = () => {
     const ALLOWED_CHARS = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
     return new RegExp('^(cosmos)1([' + ALLOWED_CHARS + ']{38,39})$');
 };
+
+// Validates a Cosmos Hub account address prefix, bech32 checksum, and 20 byte payload.
+export function isValidCosmos(address: string): boolean {
+    if (!testCosmos().test(address)) return false;
+
+    const decoded = decodeBech32(address);
+    if (!decoded || decoded.encoding !== Bech32Encoding.BECH32 || decoded.hrp !== "cosmos") return false;
+
+    const payload = bech32WordsToBytes(decoded.words);
+    return payload !== null && payload.length === ACCOUNT_ADDRESS_LENGTH;
+}
