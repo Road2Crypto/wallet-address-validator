@@ -7,8 +7,8 @@ const POLKADOT_NETWORK_PREFIX = 0;
 
 // Polkadot address regex
 // Validates that it starts with '1' and follows with valid base58 characters
-// Length is approximately 47-48 characters for standard addresses
-export const testPolkadot = (): RegExp => /^1[a-km-zA-HJ-NP-Z1-9]{46,47}$/;
+// A 35 byte SS58 address is 35 to 48 characters long, most are 47 or 48
+export const testPolkadot = (): RegExp => /^1[a-km-zA-HJ-NP-Z1-9]{34,47}$/;
 
 // Validates a Polkadot SS58 address network prefix, 32 byte account, and BLAKE2b checksum.
 export function isValidPolkadot(address: string): boolean {

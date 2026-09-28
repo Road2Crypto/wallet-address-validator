@@ -7,6 +7,8 @@ describe('Polkadot Wallet Validation', () => {
             '131MmXTN7xzy6wcb9di1JgChVoGjBfXMpphcGkGT6btu5YTo',
             '13YMK2efcJncYrXsaJCvHbaaDt3vfubdn75r4hdVxcggU4n2',
             '13KhihBbz9tULu34g4adsUTYErmK3EKQRPwK3BPP7fcQdqth',
+            '11185rfVV9bn2AzAj3pdq1sccW91pznpM9UDvgFN8jznNj', // 46 characters, the account starts with two zero bytes
+            '111111111111111111111111111111111HC1', // 36 characters, the account is all zero bytes
         ];
 
         validAddresses.forEach(address => {
