@@ -6,7 +6,7 @@ import { testCosmos } from "../validators/cosmos";
 import { isValidEvm } from "../validators/evm";
 import { isValidSolana } from "../validators/solana";
 import { isValidTron, isValidTronHex } from "../validators/tron";
-import { testCardano } from "../validators/cardano";
+import { isValidCardano } from "../validators/cardano";
 import { testPolkadot } from "../validators/polkadot";
 import { testLitecoin } from "../validators/litecoin";
 import { testDogecoin } from "../validators/dogecoin";
@@ -44,7 +44,7 @@ export const getWalletAddressType = (address: string, chains?: WalletType[], evm
         return WalletType.COSMOS
     }
 
-    if (isChainAllowed(WalletType.CARDANO) && testCardano().test(address)) {
+    if (isChainAllowed(WalletType.CARDANO) && isValidCardano(address)) {
         return WalletType.CARDANO
     }
 

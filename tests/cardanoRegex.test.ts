@@ -5,9 +5,9 @@ import { WalletType } from '../src/types/wallet';
 describe('cardanoAddressRegex', () => {
     test('validShelleyAddresses', () => {
         const addrs = [
-            'addr1q9d340dl346w6r51121d123fd134234sfa',
-            'addr_test1uq9d340dl346w6r51121d123fd134234sfa',
-            'stake1ux9d340dl346w6r51121d123fd134234sfa',
+            'addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3n0d3vllmyqwsx5wktcd8cc3sq835lu7drv2xwl2wywfgse35a3x',
+            'addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3n0d3vllmyqwsx5wktcd8cc3sq835lu7drv2xwl2wywfgs68faae',
+            'stake1uyehkck0lajq8gr28t9uxnuvgcqrc6070x3k9r8048z8y5gh6ffgw',
         ];
         addrs.forEach(a => {
             expect(testCardano().test(a)).toBe(true);

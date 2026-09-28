@@ -1,3 +1,4 @@
+import { isValidSegwitAddress } from "../utils/bech32";
 import { doubleSha256 } from "../utils/crypto";
 import { base58Decode } from "../utils/encoding";
 
@@ -5,14 +6,14 @@ import { base58Decode } from "../utils/encoding";
 export const testBitcoin = (): RegExp => {
     const p2pkh = /^[13][a-km-zA-HJ-NP-Z0-9]{25,34}$/; // P2PKH starts with 1 or 3
     const p2sh = /^3[a-km-zA-HJ-NP-Z0-9]{25,34}$/; // P2SH starts with 3
-    const bech32 = /^(bc1)[0-9a-z]{39,59}$/; // Bech32 starts with bc1
+    const bech32 = /^(bc1[0-9a-z]{39,59}|BC1[0-9A-Z]{39,59})$/; // Bech32 starts with bc1, or BC1 when fully uppercase
     return new RegExp(`${p2pkh.source}|${p2sh.source}|${bech32.source}`);
 };
 
-// Validates Bitcoin bech32 format and Base58Check version and checksum for P2PKH and P2SH addresses.
+// Validates Bitcoin segwit checksums and Base58Check version and checksum for P2PKH and P2SH addresses.
 export function isValidBitcoin(address: string): boolean {
     if (!testBitcoin().test(address)) return false;
-    if (address.startsWith("bc1")) return true;
+    if (/^bc1/i.test(address)) return isValidSegwitAddress(address, "bc");
 
     const decoded = base58Decode(address);
     if (!decoded || decoded.length !== 25) return false;

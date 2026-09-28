@@ -1,3 +1,8 @@
+import { Bech32Encoding, bech32WordsToBytes, decodeBech32 } from "../utils/bech32";
+
+const SHELLEY_PREFIXES = ["addr", "addr_test", "stake", "stake_test"];
+const SHELLEY_MIN_PAYLOAD_LENGTH = 29;
+
 /**
  * Cardano address validator
  * 
@@ -18,3 +23,15 @@ export const testCardano = (): RegExp => {
 
     return new RegExp(`${shelley.source}|${byron.source}`);
 };
+
+// Validates Cardano address format and the bech32 prefix, checksum, and payload of Shelley addresses.
+export function isValidCardano(address: string): boolean {
+    if (!testCardano().test(address)) return false;
+    if (/^(Ae2|DdzFF)/.test(address)) return true;
+
+    const decoded = decodeBech32(address);
+    if (!decoded || decoded.encoding !== Bech32Encoding.BECH32 || !SHELLEY_PREFIXES.includes(decoded.hrp)) return false;
+
+    const payload = bech32WordsToBytes(decoded.words);
+    return payload !== null && payload.length >= SHELLEY_MIN_PAYLOAD_LENGTH;
+}
