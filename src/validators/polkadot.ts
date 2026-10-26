@@ -1,4 +1,4 @@
-import { blake2b } from "@noble/hashes/blake2";
+import { blake2b } from "@noble/hashes/blake2.js";
 import { base58Decode } from "../utils/encoding";
 
 const SS58_CHECKSUM_PREFIX = Uint8Array.from([0x53, 0x53, 0x35, 0x38, 0x50, 0x52, 0x45]); // ASCII for SS58PRE

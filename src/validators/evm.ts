@@ -1,7 +1,7 @@
 // evm.ts
 
-import { keccak_256 } from '@noble/hashes/sha3';
-import { bytesToHex } from '@noble/hashes/utils';
+import { keccak_256 } from '@noble/hashes/sha3.js';
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 
 const EIP1191_CHAIN_IDS = new Set<number>([30, 31]);
 
@@ -21,7 +21,7 @@ export function isValidEvm(address: string, evmChainId?: number): boolean {
     const hashInput = EIP1191_CHAIN_IDS.has(evmChainId)
         ? `${evmChainId}0x${lowercaseBody}`
         : lowercaseBody;
-    const hash = bytesToHex(keccak_256(hashInput));
+    const hash = bytesToHex(keccak_256(utf8ToBytes(hashInput)));
     let checksummedBody = '';
 
     for (let index = 0; index < lowercaseBody.length; index++) {
